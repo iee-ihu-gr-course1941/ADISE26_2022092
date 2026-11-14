@@ -22,7 +22,7 @@
 	//echo json_encode(["message" => "Hello world"]);
 
 	try{
-		$conn = mysqli_connect($host, $user, $pass, $db, $port);
+		$conn = mysqli_connect($host, $user, $pass, $db, $port, $socket);
 		mysqli_set_charset($conn, "utf8mb4");
 
 		$result = mysqli_query($conn, "SELECT DATABASE() AS current_db, USER() AS db_user");
