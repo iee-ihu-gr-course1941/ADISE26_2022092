@@ -1,5 +1,6 @@
 <?php 
 	//class names should be lowercase cause debian on users cant find them
+	//TODO try authentication through IT API
 	declare(strict_types=1);
 
 	require_once __DIR__ . "/config.php";
@@ -22,8 +23,13 @@
 
 	$database = new database($host, $user, $pass, $db, $port, $socket);
 
+	//this is for early dev, might wanna remove later
+	//wont use conn in index.php
 	$conn = $database->getConnection();
 
+	$gateway = new gateway($database);
+
+	//this is for early dev, might wanna remove later
 	$result = mysqli_query($conn, "SELECT DATABASE() AS current_db, USER() AS db_user");
 	$info = mysqli_fetch_assoc($result);
 
