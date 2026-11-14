@@ -1,7 +1,7 @@
 <?php 
 	declare(strict_types=1);
 
-	require_once __DIR__ . "config.php";
+	require_once __DIR__ . "/config.php";
 
 	spl_autoload_register(function($class){
 		$path = str_replace("\\", DIRECTORY_SEPARATOR, $class);
