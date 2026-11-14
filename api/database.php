@@ -1,7 +1,7 @@
 <?php
 
     declare(strict_types=1);
-    class Database{
+    class database{
 
         public function __construct(
             private string $host,

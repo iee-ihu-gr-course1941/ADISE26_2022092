@@ -19,7 +19,7 @@
 	set_error_handler("errorHandler::handleError");
 	set_exception_handler("errorHandler::handleException");
 
-	$database = new Database($host, $user, $pass, $db, $port, $socket);
+	$database = new database($host, $user, $pass, $db, $port, $socket);
 
 	$conn = $database->getConnection();
 
