@@ -1,4 +1,5 @@
 <?php 
+	//class names should be lowercase cause debian on users cant find them
 	declare(strict_types=1);
 
 	require_once __DIR__ . "/config.php";
