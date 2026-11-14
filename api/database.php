@@ -1,37 +1,36 @@
 <?php
+
     declare(strict_types=1);
-
-    header("Content-Type: application/json; charset=UTF-8");
-
     class Database{
 
         public function __construct(
             private string $host,
-            private string $dbname,
             private string $user,
-            private string $password,
-            private int $port
+            private string $pass,
+            private string $db,
+            private ?int $port = null,
+            private ?string $socket = null
         ){}
 
-        public function getConnection() : PDO{
-
+        public function getConnection() : mysqli{
             try{
-                $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->dbname};charset=utf8mb4";
-
-                return new PDO(
-                    $dsn,
-                    $this->user,
-                    $this->password,
-                        [
-                            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                            PDO::ATTR_EMULATE_PREPARES => false,
-                            PDO::ATTR_STRINGIFY_FETCHES => false,
-                        ]
+                $conn = mysqli_connect(
+                    $this->host, 
+                    $this->user, 
+                    $this->pass, 
+                    $this->db, 
+                    $this->port, 
+                    $this->socket
                 );
-            }catch(PDOException $e){
+                mysqli_set_charset($conn, "utf8mb4");
+
+                return $conn;
+            }catch(mysqli_sql_exception $e){
                 http_response_code(500);
-                echo json_encode(["message" => "Internal Server Database Error"]);
+                echo json_encode([
+                    "message" => "Connection trough ssh failed",
+                    "error" => $e->getMessage()
+                ]);
                 exit;
             }
         }
