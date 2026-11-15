@@ -21,31 +21,6 @@
 	set_error_handler("errorHandler::handleError");
 	set_exception_handler("errorHandler::handleException");
 
-	$database = new database($host, $user, $pass, $db, $port, $socket);
-
-	//this is for early dev, might wanna remove later
-	//wont use conn in index.php
-	$conn = $database->getConnection();
-
-	$gateway = new gateway($database);
-
-	//this is for early dev, might wanna remove later
-	$result = mysqli_query($conn, "SELECT DATABASE() AS current_db, USER() AS db_user");
-	$info = mysqli_fetch_assoc($result);
-
-	$sql = "SELECT * FROM ADISE26_2022092.users";
-	$resulttable = $conn ->query($sql);
-	$rows = $resulttable->fetch_all(MYSQLI_ASSOC);
-	
-	/* works, if not check with this
-	echo json_encode([
-		"status" => "Connected successfully through ssh",
-		"database" => $info["current_db"],
-		"user" => $info["db_user"],
-		"rows" => $rows
-	]);
-	*/
-
 	session_start();
     error_reporting(E_ALL);
     ini_set('display_errors', 0);
@@ -103,10 +78,6 @@
 
 			if(isset($user->id)){
 				$_SESSION["profile"] = $user;
-				$_SESSION["auth"] = true;
-				$_SESSION["userID"] = $user->id;
-				$_SESSION["cn"] = $user->cn;
-				$_SESSION["title"] = $user->title;
 				header("Location: " . $redirecturl);
 				exit;
 
@@ -132,16 +103,8 @@
 
     */
 
-    if(!empty($_SESSION["auth"])){
-    	echo json_encode([
-			"authenticated" => true,
-			"profile" => $_SESSION["profile"]
-			//"cn" => $_SESSION["cn"],
-			//"title" => $_SESSION["title"]
-		]);
-		exit;
-    }else{
-		//GET for the CODE
+    if(empty($_SESSION["auth"])){
+    	//GET for the CODE
         $loginUrl = "https://login.iee.ihu.gr/authorization/?" . http_build_query([
 			"client_id"     => $client_id,
 			"response_type" => "code",
@@ -150,8 +113,53 @@
 			"state"         => session_id()
 		]);
 		header("Location: " . $loginUrl);
-		exit;
+		exit;	
     }
+	//HERE ONLY AFTER OAUTH 2.0 protocol 
+
+	echo json_encode($_SESSION["profile"]);
+	$rawPath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ?? "";
+	$path = trim(str_replace(["/~michlits/ADISE26_2022092","index.php"], "", $rawPath), "/");
+	$parts = array_values(array_filter(explode("/", $path)));
+
+	if(empty($parts) || $parts[2] !== "api"){
+		http_response_code(400);
+		echo json_encode(["message" => "Endpoint Not Found"]);
+		exit;
+	}
+
+	$resource = $parts[3];
+	$id = $parts[4];
+
+	$database = new database($host, $user, $pass, $db, $port, $socket);
+
+	$conn = $database->getConnection();
+
+	$gateway = new gateway($database);
+
+	$controller = new controller($gateway);
+
+	$controller->processRequest($_SERVER["REQUESRT_METHOD"], $resource, $id);
+
+	//this is for early dev, might wanna remove later
+	/*
+	$result = mysqli_query($conn, "SELECT DATABASE() AS current_db, USER() AS db_user");
+	$info = mysqli_fetch_assoc($result);
+
+	$sql = "SELECT * FROM ADISE26_2022092.users";
+	$resulttable = $conn ->query($sql);
+	$rows = $resulttable->fetch_all(MYSQLI_ASSOC);
+	*/
+	/* works, if not check with this
+	echo json_encode([
+		"status" => "Connected successfully through ssh",
+		"database" => $info["current_db"],
+		"user" => $info["db_user"],
+		"rows" => $rows
+	]);
+	*/
+
+	
 	
 	
 ?>
