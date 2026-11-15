@@ -36,14 +36,14 @@
 	$sql = "SELECT * FROM ADISE26_2022092.users";
 	$resulttable = $conn ->query($sql);
 	$rows = $resulttable->fetch_all(MYSQLI_ASSOC);
-
+	/*
 	echo json_encode([
 		"status" => "Connected successfully through ssh",
 		"database" => $info["current_db"],
 		"user" => $info["db_user"],
 		"rows" => $rows
 	]);
-
+	*/
 
 	session_start();
     error_reporting(E_ALL);
@@ -59,7 +59,7 @@
     $tokenurl = 'https://login.iee.ihu.gr/token';
     $infourl = 'https://api.iee.ihu.gr/profile?access_token=';
 
-	$data = 'client_id=CLIENT_ID&client_secret=CLIENT_SECRET&grant_type=authorization_code&code='.$_GET["code"].'';
+	$data = "client_id={$client_id}&client_secret={$client_id_secret}&grant_type=authorization_code&code=".$_GET["code"]."";
     $additional_headers = array(
     'Accept: application/json',
     'Content-Type: application/x-www-form-urlencoded'
