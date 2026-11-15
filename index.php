@@ -59,7 +59,7 @@
 
 		$tokenurl = "https://login.iee.ihu.gr/token";
 		$infourl = "https://api.iee.ihu.gr/profile?access_token=";
-		$redirecturl = "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/index.php";
+		$redirecturl = "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/";
 
 		$data = "client_id={$client_id}&client_secret={$client_id_secret}&grant_type=authorization_code&code=".$_GET["code"]."";
 		$additional_headers = array(
@@ -128,7 +128,7 @@
 			"client_id"     => $client_id,
 			"response_type" => "code",
 			"scope"         => "id,cn,title",
-			"redirect_uri"  => "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/index.php",
+			"redirect_uri"  => "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/",
 			"state"         => session_id()
 		]);
 		header("Location: " . $loginUrl);
