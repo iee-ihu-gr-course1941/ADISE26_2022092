@@ -1,6 +1,6 @@
 <?php 
 	//class names should be lowercase cause debian on users cant find them
-	//TODO try authentication through IT API
+	//TODO try to add the profiles from users into MariaDB
 	declare(strict_types=1);
 
 	require_once __DIR__ . "/config.php";
