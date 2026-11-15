@@ -53,7 +53,6 @@
 		http_response_code(401);
 		echo json_encode([
 			"message" => "User denied login",
-			"error" => $_GET["error"]
 		]);
 		exit;
     }
@@ -66,8 +65,8 @@
 
 		$data = "client_id={$client_id}&client_secret={$client_id_secret}&grant_type=authorization_code&code=".$_GET["code"]."";
 		$additional_headers = array(
-		'Accept: application/json',
-		'Content-Type: application/x-www-form-urlencoded'
+			'Accept: application/json',
+			'Content-Type: application/x-www-form-urlencoded'
 		);
 
 		$getToken = curl_init($tokenurl);
@@ -78,7 +77,7 @@
 
 		$server_output = curl_exec ($getToken);
 		
-		$res = json_decode($server_output);
+		$res = json_decode((string)$server_output);
 
 		//GET info
 		if(isset($res->error)){
@@ -90,10 +89,15 @@
 		else {
 			$getUserInfo = curl_init($infourl);
 			curl_setopt($getUserInfo, CURLOPT_URL, $infourl . $res->access_token);
-			curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);\
+			curl_setopt($getUserInfo, CURLOPT_HTTPHEADER, [
+				"x-access-token: " . $res->access_token,
+				"Content-Type: application/json"
+			]);
 
 			$info_output = curl_exec ($getUserInfo);
 			$user = json_decode($info_output);
+
 			if(isset($user->id)){
 				$_SESSION["auth"] = true;
 				$_SESSION["userID"] = $user->id;
@@ -131,7 +135,7 @@
 			"client_id"     => $client_id,
 			"response_type" => "code",
 			"scope"         => "id,cn,title",
-			"redirect_uri"  => "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/",
+			"redirect_uri"  => $redirecturl,
 			"state"         => session_id()
 		]);
 		header("Location: " . $loginUrl);
