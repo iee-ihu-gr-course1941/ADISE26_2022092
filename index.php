@@ -49,6 +49,8 @@
     error_reporting(E_ALL);
     ini_set('display_errors', 0);
 
+	$redirecturl = "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/";
+
     if(isset($_GET["error"], $_GET["state"]) && $_GET["state"] == session_id()){
 		http_response_code(401);
 		echo json_encode([
@@ -61,7 +63,6 @@
 
 		$tokenurl = "https://login.iee.ihu.gr/token";
 		$infourl = "https://api.iee.ihu.gr/profile?access_token=";
-		$redirecturl = "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/";
 
 		$data = "client_id={$client_id}&client_secret={$client_id_secret}&grant_type=authorization_code&code=".$_GET["code"]."";
 		$additional_headers = array(
