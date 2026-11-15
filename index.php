@@ -89,7 +89,7 @@
 		else {
 			$getUserInfo = curl_init($infourl);
 			curl_setopt($getUserInfo, CURLOPT_URL, $infourl . $res->access_token);
-			curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);\
+			curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($getUserInfo, CURLOPT_HTTPHEADER, [
 				"x-access-token: " . $res->access_token,
 				"Content-Type: application/json"
