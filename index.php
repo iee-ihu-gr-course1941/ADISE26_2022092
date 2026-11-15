@@ -37,13 +37,14 @@
 	$resulttable = $conn ->query($sql);
 	$rows = $resulttable->fetch_all(MYSQLI_ASSOC);
 	
+	/* works, if not check with this
 	echo json_encode([
 		"status" => "Connected successfully through ssh",
 		"database" => $info["current_db"],
 		"user" => $info["db_user"],
 		"rows" => $rows
 	]);
-	
+	*/
 
 	session_start();
     error_reporting(E_ALL);
