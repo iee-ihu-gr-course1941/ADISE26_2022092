@@ -49,13 +49,13 @@
     error_reporting(E_ALL);
     ini_set('display_errors', 0);
 
-    if(isset($_GET['error']) && $_GET['state'] == session_id()){
+    if(isset($_GET["error"], $_GET["state"]) && $_GET["state"] == session_id()){
 		http_response_code(401);
 		echo json_encode(["message" => "User denied login"]);
 		exit;
     }
 
-    if(isset($_GET['code']) && $_GET['state'] == session_id()){
+    if(isset($_GET["code"], $_GET["state"]) && $_GET["state"] == session_id()){
 
 		$tokenurl = "https://login.iee.ihu.gr/token";
 		$infourl = "https://api.iee.ihu.gr/profile?access_token=";
@@ -74,15 +74,15 @@
 		curl_setopt($getToken, CURLOPT_HTTPHEADER, $additional_headers);
 
 		$server_output = curl_exec ($getToken);
-		print_r($server_output);
-		echo '
-		';
+		
 		$res = json_decode($server_output);
 
 		//GET info
 		if(isset($res->error)){
 			//handle error
-			echo $res->error->message;
+			http_response_code(400);
+			echo json_encode(["message" =>$res->error->message]);
+			exit;
 		}
 		else {
 			$getUserInfo = curl_init($infourl);
@@ -101,7 +101,7 @@
 		}
 
     }
-    echo json_encode([]);
+    //echo json_encode([]);
     //If you have stored user on you database and dont need to update any of fields just get $res->user
     //$res->user = User ID
     /*
@@ -115,11 +115,24 @@
 
     */
 
-    if($_SESSION["auth"]){
-    echo 'Hello ' . $_SESSION["cn"] . ' ( '.$_SESSION["title"].' )';
+    if(!empty($_SESSION["auth"])){
+    	echo json_encode([
+			"authenticated" => true,
+			"userID" => $_SESSION["userID"],
+			"cn" => $_SESSION["cn"],
+			"title" => $_SESSION["title"]
+		]);
     }
     else {
-        echo 'Login';
+        $loginUrl = "https://login.iee.ihu.gr/authorization/?" . http_build_query([
+			"client_id"     => $client_id,
+			"response_type" => "code",
+			"scope"         => "id,cn,title",
+			"redirect_uri"  => "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/index.php",
+			"state"         => session_id()
+		]);
+		header("Location: " . $loginUrl);
+		exit;
     }
 	
 	
