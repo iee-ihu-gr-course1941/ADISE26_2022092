@@ -104,7 +104,13 @@
 				$_SESSION["userID"] = $user->id;
 				$_SESSION["cn"] = $user->cn;
 				$_SESSION["title"] = $user->title;
+				header("Location: " . $redirecturl);
+				exit;
 
+			} else {
+				http_response_code(400);
+				echo json_encode(["message" => "Profile failed", "raw" => $info_output]);
+				exit;
 			}
 		}
 
@@ -130,6 +136,7 @@
 			"cn" => $_SESSION["cn"],
 			"title" => $_SESSION["title"]
 		]);
+		exit;
     }
     else {
         $loginUrl = "https://login.iee.ihu.gr/authorization/?" . http_build_query([
