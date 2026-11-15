@@ -78,6 +78,7 @@
 
 			if(isset($user->id)){
 				$_SESSION["profile"] = $user;
+				$_SESSIOn["auth"] = true;
 				header("Location: " . $redirecturl);
 				exit;
 
@@ -118,18 +119,21 @@
 	//HERE ONLY AFTER OAUTH 2.0 protocol 
 
 	echo json_encode($_SESSION["profile"]);
+
 	$rawPath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ?? "";
 	$path = trim(str_replace(["/~michlits/ADISE26_2022092","index.php"], "", $rawPath), "/");
 	$parts = array_values(array_filter(explode("/", $path)));
 
-	if(empty($parts) || $parts[2] !== "api"){
-		http_response_code(400);
-		echo json_encode(["message" => "Endpoint Not Found"]);
+	if(empty($parts)){
+		echo json_encode([
+			"auth" => true,
+			"profile" => $_SESSION["profile"]
+		]);
 		exit;
 	}
 
-	$resource = $parts[3];
-	$id = $parts[4];
+	$resource = $parts[1];
+	$id = $parts[2];
 
 	$database = new database($host, $user, $pass, $db, $port, $socket);
 
@@ -139,7 +143,7 @@
 
 	$controller = new controller($gateway);
 
-	$controller->processRequest($_SERVER["REQUESRT_METHOD"], $resource, $id);
+	$controller->processRequest($_SERVER["REQUEST_METHOD"], $resource, $id);
 
 	//this is for early dev, might wanna remove later
 	/*
