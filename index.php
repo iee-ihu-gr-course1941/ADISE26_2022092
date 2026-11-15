@@ -65,6 +65,7 @@
 		$tokenurl = "https://login.iee.ihu.gr/token";
 		$infourl = "https://api.iee.ihu.gr/profile?access_token=";
 
+		//POST for access token
 		$data = "client_id={$client_id}&client_secret={$client_id_secret}&grant_type=authorization_code&code=".$_GET["code"]."";
 		$additional_headers = array(
 			'Accept: application/json',
@@ -88,6 +89,7 @@
 			echo json_encode(["message" =>$res->error->message]);
 			exit;
 		}else{
+			//POST FOR USER INFO
 			$getUserInfo = curl_init($infourl);
 			curl_setopt($getUserInfo, CURLOPT_URL, $infourl . $res->access_token);
 			curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);
@@ -100,6 +102,7 @@
 			$user = json_decode($info_output);
 
 			if(isset($user->id)){
+				$_SESSION["profile"] = $user;
 				$_SESSION["auth"] = true;
 				$_SESSION["userID"] = $user->id;
 				$_SESSION["cn"] = $user->cn;
@@ -132,13 +135,13 @@
     if(!empty($_SESSION["auth"])){
     	echo json_encode([
 			"authenticated" => true,
-			"userID" => $_SESSION["userID"],
-			"cn" => $_SESSION["cn"],
-			"title" => $_SESSION["title"]
+			"profile" => $_SESSION["profile"]
+			//"cn" => $_SESSION["cn"],
+			//"title" => $_SESSION["title"]
 		]);
 		exit;
     }else{
-		//GET
+		//GET for the CODE
         $loginUrl = "https://login.iee.ihu.gr/authorization/?" . http_build_query([
 			"client_id"     => $client_id,
 			"response_type" => "code",
