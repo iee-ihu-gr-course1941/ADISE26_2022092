@@ -78,7 +78,7 @@
 
 			if(isset($user->id)){
 				$_SESSION["profile"] = $user;
-				$_SESSIOn["auth"] = true;
+				$_SESSION["auth"] = true;
 				header("Location: " . $redirecturl);
 				exit;
 
@@ -117,9 +117,6 @@
 		exit;	
     }
 	//HERE ONLY AFTER OAUTH 2.0 protocol 
-
-	echo json_encode($_SESSION["profile"]);
-
 	$rawPath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ?? "";
 	$path = trim(str_replace(["/~michlits/ADISE26_2022092","index.php"], "", $rawPath), "/");
 	$parts = array_values(array_filter(explode("/", $path)));
@@ -129,6 +126,12 @@
 			"auth" => true,
 			"profile" => $_SESSION["profile"]
 		]);
+		exit;
+	}
+
+	if($parts[0] !== "api" || empty($parts[1])){
+		http_response_code(404);
+		echo json_encode(["message" => "Endpoint Not Found"]);
 		exit;
 	}
 
