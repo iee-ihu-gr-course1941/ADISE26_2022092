@@ -27,6 +27,12 @@
 
 	$redirecturl = "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/";
 
+	$database = new database($host, $user, $pass, $db, $port, $socket);
+
+	//$conn = $database->getConnection();
+
+	$gateway = new gateway($database);
+
     if(isset($_GET["error"], $_GET["state"]) && $_GET["state"] == session_id()){
 		http_response_code(401);
 		echo json_encode([
@@ -38,7 +44,7 @@
     if(isset($_GET["code"], $_GET["state"]) && $_GET["state"] == session_id()){
 
 		$tokenurl = "https://login.iee.ihu.gr/token";
-		$infourl = "https://api.iee.ihu.gr/profile?access_token=";
+		$infourl = "https://api.iee.ihu.gr/profile";
 
 		//POST for access token
 		$data = "client_id={$client_id}&client_secret={$client_id_secret}&grant_type=authorization_code&code=".$_GET["code"]."";
@@ -66,7 +72,6 @@
 		}else{
 			//POST FOR USER INFO
 			$getUserInfo = curl_init($infourl);
-			curl_setopt($getUserInfo, CURLOPT_URL, $infourl . $res->access_token);
 			curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($getUserInfo, CURLOPT_HTTPHEADER, [
 				"x-access-token: " . $res->access_token,
@@ -74,10 +79,13 @@
 			]);
 
 			$info_output = curl_exec ($getUserInfo);
-			$user = json_decode($info_output);
+			$user = json_decode($info_output);//!!! JSON OBJECT
 
 			if(isset($user->id)){
+
+				$token = $gateway->getTokenOAuthUser($user->uid);
 				$_SESSION["profile"] = $user;
+				$_SESSION["profile"]->token = $token;
 				$_SESSION["auth"] = true;
 				header("Location: " . $redirecturl);
 				exit;
@@ -104,6 +112,21 @@
 
     */
 
+	$apiToken = $_SERVER["HTTP_X_TOKEN"] ?? $_GET["token"] ?? null;
+	//check if not auth but uses token
+	if(empty($_SESSION["auth"]) && !empty($apiToken)){
+
+		$user = $gateway->getUserByToken((string) $apiToken);
+		if($user){
+			$_SESSION["auth"] = true;
+			$_SESSION["uid"] = $user["uid"];
+		}else{
+			http_response_code(401);
+			echo json_encode(["message" => "Invalid API token"]);
+			exit;
+		}
+	}
+
     if(empty($_SESSION["auth"])){
     	//GET for the CODE
         $loginUrl = "https://login.iee.ihu.gr/authorization/?" . http_build_query([
@@ -124,7 +147,7 @@
 	if(empty($parts)){
 		echo json_encode([
 			"auth" => true,
-			"profile" => $_SESSION["profile"]
+			"profile" => $_SESSION["profile"] ?? ["uid" => $_SESSION["uid"]]
 		]);
 		exit;
 	}
@@ -136,13 +159,7 @@
 	}
 
 	$resource = $parts[1];
-	$id = $parts[2];
-
-	$database = new database($host, $user, $pass, $db, $port, $socket);
-
-	$conn = $database->getConnection();
-
-	$gateway = new gateway($database);
+	$id = $parts[2] ?? null;
 
 	$controller = new controller($gateway);
 
