@@ -50,57 +50,58 @@
     ini_set('display_errors', 0);
 
     if(isset($_GET['error']) && $_GET['state'] == session_id()){
-    //print err message
-    echo 'You denied to login.';
+		http_response_code(401);
+		echo json_encode(["message" => "User denied login"]);
+		exit;
     }
 
     if(isset($_GET['code']) && $_GET['state'] == session_id()){
 
-    $tokenurl = 'https://login.iee.ihu.gr/token';
-    $infourl = 'https://api.iee.ihu.gr/profile?access_token=';
+		$tokenurl = "https://login.iee.ihu.gr/token";
+		$infourl = "https://api.iee.ihu.gr/profile?access_token=";
+		$redirecturl = "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/index.php";
 
-	$data = "client_id={$client_id}&client_secret={$client_id_secret}&grant_type=authorization_code&code=".$_GET["code"]."";
-    $additional_headers = array(
-    'Accept: application/json',
-    'Content-Type: application/x-www-form-urlencoded'
-    );
+		$data = "client_id={$client_id}&client_secret={$client_id_secret}&grant_type=authorization_code&code=".$_GET["code"]."";
+		$additional_headers = array(
+		'Accept: application/json',
+		'Content-Type: application/x-www-form-urlencoded'
+		);
 
-    $getToken = curl_init($tokenurl);
-    curl_setopt($getToken, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($getToken, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($getToken, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($getToken, CURLOPT_HTTPHEADER, $additional_headers);
+		$getToken = curl_init($tokenurl);
+		curl_setopt($getToken, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($getToken, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($getToken, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($getToken, CURLOPT_HTTPHEADER, $additional_headers);
 
-    $server_output = curl_exec ($getToken);
-    print_r($server_output);
-    echo '
-    ';
-    $res = json_decode($server_output);
+		$server_output = curl_exec ($getToken);
+		print_r($server_output);
+		echo '
+		';
+		$res = json_decode($server_output);
 
-    //GET info
-    if(isset($res->error)){
-        //handle error
-        echo $res->error->message;
+		//GET info
+		if(isset($res->error)){
+			//handle error
+			echo $res->error->message;
+		}
+		else {
+			$getUserInfo = curl_init($infourl);
+			curl_setopt($getUserInfo, CURLOPT_URL, $infourl . $res->access_token);
+			curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);
+
+			$info_output = curl_exec ($getUserInfo);
+			$user = json_decode($info_output);
+			if(isset($user->id)){
+				$_SESSION["auth"] = true;
+				$_SESSION["userID"] = $user->id;
+				$_SESSION["cn"] = $user->cn;
+				$_SESSION["title"] = $user->title;
+
+			}
+		}
+
     }
-    else {
-        $getUserInfo = curl_init($infourl);
-        curl_setopt($getUserInfo, CURLOPT_URL, $infourl . $res->access_token);
-        curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);
-
-        $info_output = curl_exec ($getUserInfo);
-        $user = json_decode($info_output);
-        if(isset($user->id)){
-            $_SESSION["auth"] = true;
-            $_SESSION["userID"] = $user->id;
-            $_SESSION["cn"] = $user->cn;
-            $_SESSION["title"] = $user->title;
-
-        }
-    }
-
-    }
-    echo '
-    ';
+    echo json_encode([]);
     //If you have stored user on you database and dont need to update any of fields just get $res->user
     //$res->user = User ID
     /*
