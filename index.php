@@ -86,8 +86,7 @@
 			http_response_code(400);
 			echo json_encode(["message" =>$res->error->message]);
 			exit;
-		}
-		else {
+		}else{
 			$getUserInfo = curl_init($infourl);
 			curl_setopt($getUserInfo, CURLOPT_URL, $infourl . $res->access_token);
 			curl_setopt($getUserInfo, CURLOPT_RETURNTRANSFER, true);
@@ -137,8 +136,8 @@
 			"title" => $_SESSION["title"]
 		]);
 		exit;
-    }
-    else {
+    }else{
+		//GET
         $loginUrl = "https://login.iee.ihu.gr/authorization/?" . http_build_query([
 			"client_id"     => $client_id,
 			"response_type" => "code",
