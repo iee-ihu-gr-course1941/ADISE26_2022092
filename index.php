@@ -51,7 +51,10 @@
 
     if(isset($_GET["error"], $_GET["state"]) && $_GET["state"] == session_id()){
 		http_response_code(401);
-		echo json_encode(["message" => "User denied login"]);
+		echo json_encode([
+			"message" => "User denied login",
+			"error" => $_GET["error"]
+		]);
 		exit;
     }
 
