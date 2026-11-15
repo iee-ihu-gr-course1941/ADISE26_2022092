@@ -142,7 +142,7 @@
         $loginUrl = "https://login.iee.ihu.gr/authorization/?" . http_build_query([
 			"client_id"     => $client_id,
 			"response_type" => "code",
-			"scope"         => "id,cn,title",
+			"scope"         => "profile",
 			"redirect_uri"  => $redirecturl,
 			"state"         => session_id()
 		]);
