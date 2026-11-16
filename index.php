@@ -163,7 +163,7 @@
 
 	$controller = new controller($gateway);
 
-	$controller->processRequest($_SERVER["REQUEST_METHOD"], $resource, $id);
+	//$controller->processRequest($_SERVER["REQUEST_METHOD"], $resource, $id);
 
 	//this is for early dev, might wanna remove later
 	/*
