@@ -1,6 +1,7 @@
 <?php 
 	//class names should be lowercase cause debian on users cant find them
-	//TODO try to add the profiles from users into MariaDB
+	//works for GET
+	//TODO implement curl and use controller->processRequest for different HTTP methods
 	declare(strict_types=1);
 
 	require_once __DIR__ . "/config.php";
@@ -144,6 +145,7 @@
 	$path = trim(str_replace(["/~michlits/ADISE26_2022092","index.php"], "", $rawPath), "/");
 	$parts = array_values(array_filter(explode("/", $path)));
 
+	//NORMAL GET
 	if(empty($parts)){
 		echo json_encode([
 			"auth" => true,
@@ -164,8 +166,6 @@
 	$controller = new controller($gateway);
 
 	//$controller->processRequest($_SERVER["REQUEST_METHOD"], $resource, $id);
-
-	//this is for early dev, might wanna remove later
 	/*
 	$result = mysqli_query($conn, "SELECT DATABASE() AS current_db, USER() AS db_user");
 	$info = mysqli_fetch_assoc($result);
@@ -174,6 +174,7 @@
 	$resulttable = $conn ->query($sql);
 	$rows = $resulttable->fetch_all(MYSQLI_ASSOC);
 	*/
+
 	/* works, if not check with this
 	echo json_encode([
 		"status" => "Connected successfully through ssh",
@@ -183,7 +184,4 @@
 	]);
 	*/
 
-	
-	
-	
 ?>
