@@ -67,5 +67,20 @@
             return $upduser;
 
         }
+
+        public function deleteUser(int $id) : int {
+            $sql = "DELETE FROM users WHERE id = ?";
+
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            
+            $rows = $stmt->affected_rows;
+
+            $stmt->close();
+
+            return $rows;
+        }
     }
 ?>

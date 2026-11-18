@@ -60,13 +60,49 @@
                         }
 
                         $upduser = $this->gateway->updateUser($user);
-
+                        
+                        http_response_code(200);
                         echo json_encode([
                             "message" => "User Updated Successfully",
                             "Updated User" => $upduser
                         ]);
                         break;
                     case "DELETE":
+
+                        if(!$token){
+                            http_response_code(401);
+                            echo json_encode(["message" => "Missing API token"]);
+                            return;
+                        }
+                        $data = (array) json_decode(file_get_contents("php://input"), true);
+                        $user = $this->gateway->getUserByToken($token);
+
+                        if(!$user){
+                            http_response_code(404);
+                            echo json_encode("User Not Found");
+                            return;
+                        }
+
+                        $rows = $this->gateway->deleteUser($user["id"]);
+
+                        if($rows === 0){
+                            http_response_code(400);
+                            echo json_encode([
+                                "message" => "Couldnt Delete User",
+                                "rows" => $rows
+                            ]);
+                            return;
+                        }
+
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "User Deleted",
+                            "rows" => $rows
+                        ]);
+                        break;
+                    default:
+                        http_response_code(405);
+                        header("Allow: PATCH, DELETE");
                         break;
                     
                 }

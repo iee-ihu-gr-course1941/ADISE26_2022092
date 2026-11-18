@@ -1,3 +1,9 @@
 GET ALL USERS: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users" \
   -H "Accept: application/json" \
   -H "X-Token: b20bb1475c29359232954a1a7c8f81ab"
+
+PATCH UPDATE USER curl -i -X POST "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/{id}" \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "X-Token: faac0b30c96c5413edab74f105cfcd9b" \
+  -H "X-HTTP-Method-Override: PATCH"
