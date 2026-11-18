@@ -27,10 +27,13 @@
                     $this->handleUsers($method, $id !== null ? (int) $id : null);
                     break;
                 case "games":
+                    $this->handleGames($method, $id !== null ? (int) $id : null);
                     break;
                 case "play":
                     break;
                 case "matchhistory":
+                    break;
+                default:
                     break;
             }
         }
@@ -113,7 +116,6 @@
                     case "POST":
                         $data = (array) json_decode(file_get_contents("php://input"), true);
                         
-                        if(empty($data["uid"]))
                         break;
                     case "GET":
                         $users = $this->gateway->getAllUsers();
@@ -121,6 +123,28 @@
                         echo json_encode($users);
                         break;
 
+                }
+            }
+        }
+
+        public function handleGames(string $method, ?int $id) : void {
+
+            if($id !== null){
+
+                switch($method){
+
+                    case "GET":
+                        $game = $this->gateway->getGame($id);
+                        
+                        if(!$game){
+
+                            http_response_code(404);
+                            echo json_encode(["messsage" => "Game Not Found"]);
+                            return;
+                        }
+
+                        echo json_encode($game);
+                        break;
                 }
             }
         }
