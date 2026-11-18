@@ -97,7 +97,7 @@
                         http_response_code(200);
                         echo json_encode([
                             "message" => "User Deleted",
-                            "rows" => $rows
+                            "rows affected" => $rows
                         ]);
                         break;
                     default:
