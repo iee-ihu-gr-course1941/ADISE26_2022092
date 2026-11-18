@@ -146,7 +146,7 @@
 	$parts = array_values(array_filter(explode("/", $path)));
 
 	//NORMAL GET
-	/*
+	
 	if(empty($parts)){
 		echo json_encode([
 			"auth" => true,
@@ -154,15 +154,14 @@
 		]);
 		exit;
 	}
-	*/
+	
 
-	if(!empty($parts)){
-		if($parts[0] !== "api" || empty($parts[1])){
-			http_response_code(404);
-			echo json_encode(["message" => "Endpoint Not Found"]);
-			exit;
-		}
+	if($parts[0] !== "api" || empty($parts[1])){
+		http_response_code(404);
+		echo json_encode(["message" => "Endpoint Not Found"]);
+		exit;
 	}
+	
 
 	$resource = $parts[1];
 	$id = $parts[2] ?? null;
