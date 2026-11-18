@@ -163,6 +163,17 @@
 	$resource = $parts[1];
 	$id = $parts[2] ?? null;
 
+	$method = $_SERVER["REQUEST_METHOD"];
+
+	if($method === "POST"){
+		$headers = function_exists("getallheaders") ? array_change_key_case(getallheaders(), CASE_LOWER) : [];
+		$override = $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] ?? $headers["x-http-method-override"] ?? $_GET["_method"] ?? null;
+
+		if($override){
+			$method = strtoupper($override);
+		}
+	}
+
 	$controller = new controller($gateway);
 
 	$controller->processRequest($_SERVER["REQUEST_METHOD"], $resource, $id);
