@@ -30,8 +30,6 @@
 
 	$database = new database($host, $user, $pass, $db, $port, $socket);
 
-	//$conn = $database->getConnection();
-
 	$gateway = new gateway($database);
 
     if(isset($_GET["error"], $_GET["state"]) && $_GET["state"] == session_id()){
@@ -146,7 +144,6 @@
 	$parts = array_values(array_filter(explode("/", $path)));
 
 	//NORMAL GET
-	
 	if(empty($parts)){
 		echo json_encode([
 			"auth" => true,

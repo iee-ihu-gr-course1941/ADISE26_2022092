@@ -5,6 +5,21 @@
             
         }
 
+        private function getApiToken() : ? string {
+
+            if(!empty($_SERVER["HTTP_X_TOKEN"])){
+                return $_SERVER["HTTP_X_TOKEN"];
+            }
+
+            //check case sensitive headers
+            if(function_exists("getallheaders")){
+                $headers = array_change_key_case(getallheaders(), CASE_LOWER);
+                return $headers["x-token"] ?? null ;
+            }
+
+            return null;
+        } 
+
         public function processRequest(string $method, ?string $resource, ?string $id) : void {
 
             switch($resource){
@@ -22,9 +37,37 @@
 
         public function handleUsers(string $method, ?int $id) : void {
 
+            $token = $this->getApiToken();
+
             if($id !== null){
 
                 switch($method){
+
+                    case "PATCH":
+
+                        if(!$token){
+                            http_response_code(401);
+                            echo json_encode(["message" => "Missing API token"]);
+                            return;
+                        }
+                        $data = (array) json_decode(file_get_contents("php://input"), true);
+                        $user = $this->gateway->getUserByToken($token);
+
+                        if(!$user){
+                            http_response_code(404);
+                            echo json_encode("User Not Found");
+                            return;
+                        }
+
+                        $upduser = $this->gateway->updateUser($user);
+
+                        echo json_encode([
+                            "message" => "User Updated Successfully",
+                            "Updated User" => $upduser
+                        ]);
+                        break;
+                    case "DELETE":
+                        break;
                     
                 }
             }else{
