@@ -142,7 +142,7 @@
     }
 	//HERE ONLY AFTER OAUTH 2.0 protocol 
 	$rawPath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH) ?? "";
-	$path = trim(str_replace(["/~michlits/ADISE26_2022092/","index.php"], "", $rawPath), "/");
+	$path = trim(str_replace(["/~michlits/ADISE26_2022092/", "/ADISE26_2022092/", "/ADISE/", "index.php"], "", $rawPath), "/");
 	$parts = array_values(array_filter(explode("/", $path)));
 
 	//NORMAL GET
