@@ -146,6 +146,7 @@
 	$parts = array_values(array_filter(explode("/", $path)));
 
 	//NORMAL GET
+	/*
 	if(empty($parts)){
 		echo json_encode([
 			"auth" => true,
@@ -153,7 +154,8 @@
 		]);
 		exit;
 	}
-
+	*/
+	
 	if($parts[0] !== "api" || empty($parts[1])){
 		http_response_code(404);
 		echo json_encode(["message" => "Endpoint Not Found"]);
@@ -165,7 +167,7 @@
 
 	$controller = new controller($gateway);
 
-	//$controller->processRequest($_SERVER["REQUEST_METHOD"], $resource, $id);
+	$controller->processRequest($_SERVER["REQUEST_METHOD"], $resource, $id);
 	/*
 	$result = mysqli_query($conn, "SELECT DATABASE() AS current_db, USER() AS db_user");
 	$info = mysqli_fetch_assoc($result);

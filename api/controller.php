@@ -36,6 +36,12 @@
                         
                         if(empty($data["uid"]))
                         break;
+                    case "GET":
+                        $users = $this->gateway->getAllUsers();
+
+                        echo json_encode($users);
+                        break;
+
                 }
             }
         }

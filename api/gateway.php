@@ -39,5 +39,14 @@
 
             return $user;
         }
+
+        public function getAllUsers() : array {
+
+            $sql = "SELECT uid, wins FROM users";
+
+            $stmt = $this->conn->query($sql);
+
+            return $stmt->fetchAll;
+        }
     }
 ?>
