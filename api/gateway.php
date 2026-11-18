@@ -46,7 +46,7 @@
 
             $stmt = $this->conn->query($sql);
 
-            return $stmt->fetchAll;
+            return $stmt->fetch_all(MYSQLI_ASSOC);
         }
     }
 ?>
