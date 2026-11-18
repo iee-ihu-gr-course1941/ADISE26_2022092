@@ -58,7 +58,7 @@
 
             $stmt = $this->conn->prepare($sql);
 
-            $stmt->bind_param("ss", $curruser["uid"]);
+            $stmt->bind_param("s", $curruser["uid"]);
             $stmt->execute();
             $stmt->close();
 
