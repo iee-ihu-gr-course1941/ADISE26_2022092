@@ -176,7 +176,7 @@
 
 	$controller = new controller($gateway);
 
-	$controller->processRequest($_SERVER["REQUEST_METHOD"], $resource, $id);
+	$controller->processRequest($method, $resource, $id);
 	/*
 	$result = mysqli_query($conn, "SELECT DATABASE() AS current_db, USER() AS db_user");
 	$info = mysqli_fetch_assoc($result);
