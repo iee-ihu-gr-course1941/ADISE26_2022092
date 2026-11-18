@@ -121,6 +121,7 @@
 		if($user){
 			$_SESSION["auth"] = true;
 			$_SESSION["uid"] = $user["uid"];
+			$_SESSION["token"] = $user["token"];
 		}else{
 			http_response_code(401);
 			echo json_encode(["message" => "Invalid API token"]);
