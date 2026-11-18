@@ -84,6 +84,7 @@
 
 				$token = $gateway->getTokenOAuthUser($user->uid);
 				$_SESSION["uid"] = $user->uid;
+				//$_SESSION["profile"] = $user;
 				//$_SESSION["profile"]->token = $token;
 				$_SESSION["token"] = $token;
 				$_SESSION["auth"] = true;
@@ -148,7 +149,8 @@
 	if(empty($parts)){
 		echo json_encode([
 			"auth" => true,
-			"uid" => $_SESSION["token"] ?? $apiToken
+			"uid" => $_SESSION["uid"],
+			"token" => $_SESSION["token"]
 		]);
 		exit;
 	}
