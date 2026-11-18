@@ -84,7 +84,8 @@
 
 				$token = $gateway->getTokenOAuthUser($user->uid);
 				$_SESSION["uid"] = $user->uid;
-				$_SESSION["profile"]->token = $token;
+				//$_SESSION["profile"]->token = $token;
+				$_SESSION["token"] = $token;
 				$_SESSION["auth"] = true;
 				header("Location: " . $redirecturl);
 				exit;
@@ -147,7 +148,7 @@
 	if(empty($parts)){
 		echo json_encode([
 			"auth" => true,
-			"uid" => $_SESSION["uid"]
+			"uid" => $_SESSION["token"] ?? $apiToken
 		]);
 		exit;
 	}
