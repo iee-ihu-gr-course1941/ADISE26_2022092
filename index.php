@@ -83,11 +83,11 @@
 			if(isset($user->id)){
 
 				$token = $gateway->getTokenOAuthUser($user->uid);
-				$_SESSION["uid"] = $user->uid;
-				//$_SESSION["profile"] = $user;
-				//$_SESSION["profile"]->token = $token;
-				$_SESSION["token"] = $token;
 				$_SESSION["auth"] = true;
+				$_SESSION["uid"] = $user->uid;
+				//$_SESSION["profile"] = $user; whole profile
+				//$_SESSION["profile"]->token = $token; add token to profile
+				$_SESSION["token"] = $token;
 				header("Location: " . $redirecturl);
 				exit;
 
@@ -156,7 +156,6 @@
 		exit;
 	}
 	
-
 	if($parts[0] !== "api" || empty($parts[1])){
 		http_response_code(404);
 		echo json_encode(["message" => "Endpoint Not Found"]);
@@ -168,7 +167,7 @@
 	$id = $parts[2] ?? null;
 
 	$method = $_SERVER["REQUEST_METHOD"];
-
+	/*
 	if($method === "POST"){
 		$headers = function_exists("getallheaders") ? array_change_key_case(getallheaders(), CASE_LOWER) : [];
 		$override = $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] ?? $headers["x-http-method-override"] ?? $_GET["_method"] ?? null;
@@ -177,7 +176,7 @@
 			$method = strtoupper($override);
 		}
 	}
-
+	*/
 	$controller = new controller($gateway);
 
 	$controller->processRequest($method, $resource, $id);
