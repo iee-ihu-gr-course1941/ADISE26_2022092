@@ -7,6 +7,18 @@ CREATE TABLE ADISE26_2022092.users (
     wins INT NOT NULL DEFAULT 0
 );
 
+--Might need adjustements
+DROP TABLE IF EXISTS games;
+
+CREATE TABLE IF NOT EXISTS games (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    status ENUM('waiting', 'playing', 'finished') DEFAULT 'waiting',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    red VARCHAR(50),
+    blue VARCHAR(50),
+    player_turn VARCHAR(50)
+);
+
 	
 --last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 --created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

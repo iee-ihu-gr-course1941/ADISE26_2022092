@@ -56,13 +56,21 @@
                         $data = (array) json_decode(file_get_contents("php://input"), true);
                         $user = $this->gateway->getUserByToken($token);
 
-                        if(!$user){
+                        if($user === null){
                             http_response_code(404);
                             echo json_encode("User Not Found");
                             return;
                         }
 
                         $upduser = $this->gateway->updateUser($user);
+
+                        if($upduser === null){
+                            http_response_code(403);
+                            echo json_encode([
+                                "message" => "Couldnt Update User",
+                            ]);
+                            return;
+                        }
                         
                         http_response_code(200);
                         echo json_encode([
@@ -80,7 +88,7 @@
                         $data = (array) json_decode(file_get_contents("php://input"), true);
                         $user = $this->gateway->getUserByToken($token);
 
-                        if(!$user){
+                        if($user === null){
                             http_response_code(404);
                             echo json_encode("User Not Found");
                             return;
@@ -120,9 +128,18 @@
                     case "GET":
                         $users = $this->gateway->getAllUsers();
 
+                        if(empty($users)){
+                            http_response_code(404);
+                            echo json_encode([
+                                "message" => "No Users Found",
+                            ]);
+                            return;
+                        }
+
                         echo json_encode($users);
                         break;
-
+                    default:
+                        break;
                 }
             }
         }
@@ -136,15 +153,53 @@
                     case "GET":
                         $game = $this->gateway->getGame($id);
                         
-                        if(!$game){
+                        if($game === null){
 
                             http_response_code(404);
-                            echo json_encode(["messsage" => "Game Not Found"]);
+                            echo json_encode(["message" => "Game Not Found"]);
                             return;
                         }
 
                         echo json_encode($game);
                         break;
+                }
+            }else{
+
+                switch($method){
+
+                    case "POST":
+                        $data = (array) json_decode(file_get_contents("php://input"), true);
+
+                        if(empty($data["uid"]) || empty($data["color"])){
+                            http_response_code(422);
+                            echo json_encode(["message" => "userid and color are required"]);
+                            return;
+                        }
+
+                        $game = $this->gateway->getGameByUser($data["uid"]);
+
+                        if(($game) !== null){
+                            http_response_code(422);
+                            echo json_encode(["message" => "User is already participating in a game"]);
+                            return;
+                        }
+
+                        $game = $this->gateway->createGame($data);
+
+                        if(!$game){
+                            http_response_code(422);
+                            echo json_encode(["message" => "Couldnt Create Game"]);
+                            return;
+                        }
+
+                        http_response_code(201);
+                        echo json_encode([
+                            "message" => "Game Created Successfully",
+                            "game" => $game
+                        ]);
+
+                        break;
+
                 }
             }
         }
