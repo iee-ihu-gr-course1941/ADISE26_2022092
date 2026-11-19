@@ -30,6 +30,13 @@
             $this->pawns["r"] = $this->squareToCoordinates($pawnParts[0]);
             $this->pawns["b"] = $this->squareToCoordinates($pawnParts[1]);
 
+            $this->hWalls = [];
+            if ($hWallStr !== "-") {
+                foreach (explode(",", $hWallStr) as $sq) {
+                    $this->hWalls[] = $this->squareToCoordinates($sq);
+                }
+            }
+
             $this->vWalls = [];
 
             if($vWallStr !== "-"){
@@ -51,7 +58,7 @@
             }
 
             $this->wallsRemaining["r"] = (int) $counts[0];
-            $this->wallsRemaining["b"] = (int) $counts[0];
+            $this->wallsRemaining["b"] = (int) $counts[1];
         }
 
         public function toState() : string {
@@ -63,9 +70,9 @@
                 $this->hWalls
             ));
 
-            $vStr = empty($this->hWalls) ? "-" : implode(",", array_map(
+            $vStr = empty($this->vWalls) ? "-" : implode(",", array_map(
                 fn($w) => $this->coordinatesToSquare($w[0], $w[1]),
-                $this->hWalls
+                $this->vWalls
             ));
 
             return sprintf(
@@ -133,46 +140,44 @@
 
                 if($midRow === $oppRow && $midCol === $oppCol){
                     if(
-                        !$this->isBlockByWall($fromRow, $fromCol, $midRow, $midCol) &&
-                        !$this->isBlockByWall($midRow, $midCol, $toRow, $toCol)
+                        !$this->isBlockedByWall($fromRow, $fromCol, $midRow, $midCol) &&
+                        !$this->isBlockedByWall($midRow, $midCol, $toRow, $toCol)
                     ){
-                        $isValidMove = true3;
+                        $isValidMove = true;
                     }
                 }
             }//step diagonal over opponent
             elseif($absRow === 1 && $absCol === 1){
-                
-                if($oppRow === 1 && $absCol === 1){
-                    if($oppRow === ($fromRow + $dRow) && $oppCol === $fromCol){
-                        $behindOppRow = $oppRow + $dRow;
-                        $straightBlocked = !$this->isInsideBoard($behindOppRow, $oppCol) ||
-                                            $this->isBlockedByWall($oppRow, $oppCol, $behindOppRow, $oppCol)
-                        ;
 
-                        if(
-                            $straightBlocked &&
-                            !$this->isBlockedByWall($fromRow, $fromCol, $oppRow, $oppCol) &&
-                            !$this->isBlockedByWall($oppRow, $oppCol, $toRow, $toCol)
-                        ){
-                            $isValidMove = true;
-                        }
-                    }elseif ($oppRow === $fromRow && $oppCol === ($fromCol + $dCol)){
-                        $behindOppCol = $oppCol + $dCol;
-                        $straightBlocked = !$this->isInsideBoard($oppRow, $behindOppCol) ||
-                                            $this->isBlockedByWall($oppRow, $oppCol, $oppRow, $behindOppCol)
-                        ;
+                if($oppRow === ($fromRow + $dRow) && $oppCol === $fromCol){
+                    $behindOppRow = $oppRow + $dRow;
+                    $straightBlocked = !$this->isInsideBoard($behindOppRow, $oppCol) ||
+                                        $this->isBlockedByWall($oppRow, $oppCol, $behindOppRow, $oppCol)
+                    ;
 
-                        if (
-                            $straightBlocked &&
-                            !$this->isBlockedByWall($fromRow, $fromCol, $oppRow, $oppCol) &&
-                            !$this->isBlockedByWall($oppRow, $oppCol, $toRow, $toCol)
-                        ){
-                            $isValidMove = true;
-                        }
-                    }   
-                }
+                    if(
+                        $straightBlocked &&
+                        !$this->isBlockedByWall($fromRow, $fromCol, $oppRow, $oppCol) &&
+                        !$this->isBlockedByWall($oppRow, $oppCol, $toRow, $toCol)
+                    ){
+                        $isValidMove = true;
+                    }
+                }elseif ($oppRow === $fromRow && $oppCol === ($fromCol + $dCol)){
+                    $behindOppCol = $oppCol + $dCol;
+                    $straightBlocked = !$this->isInsideBoard($oppRow, $behindOppCol) ||
+                                        $this->isBlockedByWall($oppRow, $oppCol, $oppRow, $behindOppCol)
+                    ;
+
+                    if(
+                        $straightBlocked &&
+                        !$this->isBlockedByWall($fromRow, $fromCol, $oppRow, $oppCol) &&
+                        !$this->isBlockedByWall($oppRow, $oppCol, $toRow, $toCol)
+                    ){
+                        $isValidMove = true;
+                    }
+                }   
             }
-
+            
             if(!$isValidMove){
                 return false;
             }
@@ -181,6 +186,173 @@
             $this->switchTurn();
 
             return true;
+        }
+
+        public function placeWall(string $square , string $orientation) : bool {
+
+            if($this->isGameOver()){
+                return false;
+            }
+
+            if($this->wallsRemaining[$this->activeColor] <= 0){
+                return false;
+            }
+
+            [$row, $col] = $this->squareToCoordinates($square);
+
+            if($row < 1 || $row > 8 || $col < 0 || $col > 7){
+                return false;
+            }
+
+            if($orientation === "h"){
+                foreach($this->hWalls as [$wr, $wc]){
+                    if($wr === $row && abs($wc - $col) <=1){
+                        return false;
+                    }
+                }
+                foreach($this->vWalls as [$wr, $wc]){
+                    if($wr === $row && $wc === $col){
+                        return false;
+                    }
+                }
+
+                $savedWalls = $this->hWalls;
+                $this->hWalls[] = [$row, $col];
+
+                if(!$this->hasPathToGoal("r") || !$this->hasPathToGoal("b")){
+                    $this->hWalls = $savedWalls;
+                    return false;
+                }
+            }elseif($orientation === "v"){
+                foreach($this->vWalls as [$wr, $wc]){
+                    if($wc === $col && abs($wr - $row) <= 1){
+                        return false;
+                    }
+                }
+                foreach ($this->hWalls as [$wr, $wc]) {
+                    if ($wr === $row && $wc === $col) {
+                        return false;
+                    }
+                }
+
+                $savedWalls = $this->vWalls;
+                $this->vWalls[] = [$row, $col];
+
+                if (!$this->hasPathToGoal('r') || !$this->hasPathToGoal('b')) {
+                    $this->vWalls = $savedWalls;
+                    return false;
+                }
+            }else{
+                return false;
+            }
+
+            $this->wallsRemaining[$this->activeColor]--;
+            $this->switchTurn();
+
+            return true;
+        }
+
+        private function squareToCoordinates(string $square): array {
+            if (strlen($square) !== 2) {
+                throw new InvalidArgumentException("Invalid square notation: $square");
+            }
+
+            $file = ord(strtolower($square[0])) - ord("a");
+            $rank = (int) $square[1];
+            $row = 9 - $rank;
+
+            return [$row, $file];
+        }
+
+        private function isBlockedByWall(int $r1, int $c1, int $r2, int $c2): bool {
+            if ($c1 === $c2) {
+                $lowerRow = max($r1, $r2);
+                foreach ($this->hWalls as [$wr, $wc]) {
+                    if ($wr === $lowerRow && ($wc === $c1 || $wc + 1 === $c1)) {
+                        return true;
+                    }
+                }
+            }
+
+            if ($r1 === $r2) {
+                $leftCol = min($c1, $c2);
+                foreach ($this->vWalls as [$wr, $wc]) {
+                    if ($wc === $leftCol && ($wr === $r1 || $wr - 1 === $r1)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private function hasPathToGoal(string $color): bool {
+            $goalRow = ($color === "r") ? 0 : 8;
+            [$startRow, $startCol] = $this->pawns[$color];
+
+            if ($startRow === $goalRow) {
+                return true;
+            }
+
+            $visited = array_fill(0, 9, array_fill(0, 9, false));
+            $queue = [[$startRow, $startCol]];
+            $visited[$startRow][$startCol] = true;
+
+            $head = 0;
+            while ($head < count($queue)) {
+                [$r, $c] = $queue[$head++];
+
+                foreach ([[-1, 0], [1, 0], [0, -1], [0, 1]] as [$dr, $dc]) {
+                    $nr = $r + $dr;
+                    $nc = $c + $dc;
+
+                    if ($this->isInsideBoard($nr, $nc) && !$visited[$nr][$nc]) {
+                        if (!$this->isBlockedByWall($r, $c, $nr, $nc)) {
+                            if ($nr === $goalRow) {
+                                return true;
+                            }
+                            $visited[$nr][$nc] = true;
+                            $queue[] = [$nr, $nc];
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public function coordinatesToSquare(int $row, int $col) : string {
+            $file = chr(ord("a") + $col);
+            $rank = 9 - $row;
+
+            return "$file$rank";
+        }
+
+        private function isInsideBoard(int $row, int $col): bool {
+            return $row >= 0 && $row < 9 && $col >= 0 && $col < 9;
+        }
+
+        private function switchTurn() : void {
+            $this->activeColor = ($this->activeColor === "r") ? "b" : "r";
+        }
+
+        public function getActiveColor() : string {
+            return $this->activeColor;
+        }
+
+        public function isGameOver() : bool {
+            return $this->getWinner() !== null;
+        }
+
+        public function getWinner() : ?string {
+            if($this->pawns["r"][0] === 0){
+                return "r";
+            }
+            if($this->pawns["b"][0] === 8){
+                return "b";
+            }
+
+            return null;
         }
     }
 ?>
