@@ -127,17 +127,17 @@
                         
                         break;
                     case "GET":
-                        $users = $this->gateway->getAllUsers();
+                        $user = $this->gateway->getUserByToken($token);
 
-                        if(empty($users)){
+                        if(empty($user)){
                             http_response_code(404);
                             echo json_encode([
-                                "message" => "No Users Found",
+                                "message" => "User Not Found",
                             ]);
                             return;
                         }
 
-                        echo json_encode($users);
+                        echo json_encode($user);
                         break;
                     default:
                         break;
