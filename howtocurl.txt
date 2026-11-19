@@ -7,7 +7,7 @@ PATCH UPDATE USER: curl -i -X PATCH "https://users.iee.ihu.gr/~michlits/ADISE26_
   -H "Content-Type: application/json" \
   -H "X-Token: faac0b30c96c5413edab74f105cfcd9b" \
 
-DELETE DELETE USER: curl -i -X DELETE "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/2" \
+DELETE DELETE USER: curl -i -X DELETE "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/{id}" \
   -H "X-Token: e05bdd6a7800b5403bbc56513535479b" \
   -H "Accept: application/json"
 
@@ -19,3 +19,6 @@ POST CREATE GAME: curl -X POST "https://users.iee.ihu.gr/~michlits/ADISE26_20220
     "uid": "michlits",
     "color": "r"
   }'
+
+PATCH UPDATE GAME (JOIN GAME)
+

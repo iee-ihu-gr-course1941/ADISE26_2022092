@@ -43,17 +43,18 @@
 
             $token = $this->getApiToken();
 
+            if(!$token){
+                http_response_code(401);
+                echo json_encode(["message" => "Missing API token"]);
+                return;
+            }
+
             if($id !== null){
 
                 switch($method){
                     //not really needed
                     case "PATCH":
 
-                        if(!$token){
-                            http_response_code(401);
-                            echo json_encode(["message" => "Missing API token"]);
-                            return;
-                        }
                         $data = (array) json_decode(file_get_contents("php://input"), true);
                         $user = $this->gateway->getUserByToken($token);
 
@@ -81,14 +82,9 @@
                         break;
                     case "DELETE":
 
-                        if(!$token){
-                            http_response_code(401);
-                            echo json_encode(["message" => "Missing API token"]);
-                            return;
-                        }
                         $data = (array) json_decode(file_get_contents("php://input"), true);
                         $user = $this->gateway->getUserByToken($token);
-//
+
                         if($user === null){
                             http_response_code(404);
                             echo json_encode("User Not Found");
@@ -140,6 +136,8 @@
                         echo json_encode($user);
                         break;
                     default:
+                        http_response_code(405);
+                        header("Allow: POST, GET");
                         break;
                 }
             }
@@ -149,6 +147,11 @@
 
             $token = $this->getApiToken();
 
+            if(!$token){
+                http_response_code(401);
+                echo json_encode(["message" => "Missing API token"]);
+                return;
+            }
 
             if($id !== null){
 
@@ -165,6 +168,67 @@
                         }
 
                         echo json_encode($game);
+                        break;
+                    case "PATCH":
+                        $data = (array) json_decode(file_get_contents("php://input"), true);
+
+                        $user = $this->gateway->getUserByToken($token);
+
+                        if(empty($user)){
+                            http_response_code(404);
+                            echo json_encode([
+                                "message" => "User Not Found",
+                            ]);
+                            return;
+                        }
+
+                        $game = $this->gateway->getGameByUser($user["uid"]);
+
+                        if(!empty($game)){
+                            http_response_code(422);
+                            echo json_encode(["message" => "This User is Arleady In-Game or Waiting"]);
+                            return;
+                        }
+
+                        $game = $this->gateway->getGame($id);
+
+                        if(empty($game)){
+                            http_response_code(404);
+                            echo json_encode(["message" => "Game Not Found"]);
+                            return;
+                        }
+
+                        if($game["status"] === "playing"){
+                            http_response_code(409);
+                            echo json_encode([
+                                "message" => "This Game is Already In-Progress",
+                                "game" => $game
+                            ]);
+                            return;
+                        }
+
+                        $rows = $this->gateway->joinGame($user["uid"], $id);
+
+                        if($rows === 0){
+                            http_response_code(409);
+                            echo json_encode(["message" => "Could Not Join Game"]);
+                            return;
+                        }
+
+                        $updatedGame = $this->gateway->getGame($id);
+
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "Game Joint Successfully",
+                            "rows" => $rows,
+                            "game" => $updatedGame 
+                        ]);
+
+                        break;
+
+                    default:
+                        http_response_code(405);
+                        header("Allow: GET, PATCH");
                         break;
                 }
             }else{
@@ -217,6 +281,14 @@
                             "game" => $game
                         ]);
 
+                        break;
+                    //MAKE THIS GET ALL AVAILABLE GAMES
+                    case "GET":
+                        break;
+
+                    default:
+                        http_response_code(405);
+                        header("Allow: GET, POST");
                         break;
                 }
             }

@@ -85,7 +85,7 @@
 
         public function getGame(int $id) : ?array {
 
-            $sql = "SELECT * FROM games WHERE id = ?";
+            $sql = "SELECT * FROM games WHERE id = ? AND status <> 'finished'";
 
             $stmt = $this->conn->prepare($sql);
 
@@ -120,11 +120,11 @@
             $sql = null;
 
             if($data["color"] === "b"){
-                $sql = "INSERT INTO games (blue, player_turn)
-                    VALUES (?, ?)";
+                $sql = "INSERT INTO games (blue)
+                    VALUES (?)";
                 $stmt = $this->conn->prepare($sql);
 
-                $stmt->bind_param("ss", $data["uid"], $data["uid"]);
+                $stmt->bind_param("s", $data["uid"]);
 
             }elseif($data["color"] === "r"){
                 $sql = "INSERT INTO games (red, player_turn)
@@ -144,6 +144,42 @@
             $id = $this->conn->insert_id;
 
             return $this->getGame($id);
+        }
+
+        public function joinGame(string $uid, int $id) : int{
+
+            $game = $this->getGame($id);
+
+            if(empty($game)){
+                return 0;
+            }
+
+            $sql = null;
+
+            if($game["red"] === null){
+                $sql = "UPDATE games
+                    SET red = ?, status = 'playing', player_turn = ?
+                    WHERE id = ?"
+                ;
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("ssi", $uid, $uid, $id);
+            }else{
+                $sql = "UPDATE games
+                    SET blue = ?, status = 'playing'
+                    WHERE id = ?"
+                ;
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("si", $uid, $id);
+            }
+
+            $stmt->execute();
+
+            $rows = $stmt->affected_rows;
+
+            $stmt->close();
+
+            return $rows;
+
         }
     }
 ?>
