@@ -144,6 +144,7 @@
         }
 
         public function handleGames(string $method, ?int $id) : void {
+            //TODO create GET to get all waiting games
 
             $token = $this->getApiToken();
 
@@ -170,7 +171,6 @@
                         echo json_encode($game);
                         break;
                     case "PATCH":
-                        $data = (array) json_decode(file_get_contents("php://input"), true);
 
                         $user = $this->gateway->getUserByToken($token);
 
@@ -237,12 +237,6 @@
 
                     case "POST":
 
-                        if(!$token){
-                            http_response_code(401);
-                            echo json_encode(["message" => "Missing API token"]);
-                            return;
-                        }
-
                         $user = $this->gateway->getUserByToken($token);
 
                         if($user === null){
@@ -284,6 +278,23 @@
                         break;
                     //MAKE THIS GET ALL AVAILABLE GAMES
                     case "GET":
+                        
+                        $games = $this->gateway->getAvailableGames();
+
+                        if(empty($games)){
+                            http_response_code(400);
+                            echo json_encode([
+                                "message" => "No Available Games",
+                            ]);
+                            return;
+                        }
+
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "Available Games",
+                            "games" => $games
+                        ]);
+
                         break;
 
                     default:

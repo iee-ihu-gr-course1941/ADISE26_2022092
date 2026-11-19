@@ -20,5 +20,7 @@ POST CREATE GAME: curl -X POST "https://users.iee.ihu.gr/~michlits/ADISE26_20220
     "color": "r"
   }'
 
-PATCH UPDATE GAME (JOIN GAME)
+PATCH UPDATE GAME (JOIN GAME): curl -X PATCH "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/games/{id}" \
+  -H "Accept: application/json" \
+  -H "X-Token: token"
 
