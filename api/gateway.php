@@ -119,14 +119,14 @@
 
             $sql = null;
 
-            if($data["color"] === "blue"){
+            if($data["color"] === "b"){
                 $sql = "INSERT INTO games (blue, player_turn)
                     VALUES (?, ?)";
                 $stmt = $this->conn->prepare($sql);
 
                 $stmt->bind_param("ss", $data["uid"], $data["uid"]);
 
-            }elseif($data["color"] === "red"){
+            }elseif($data["color"] === "r"){
                 $sql = "INSERT INTO games (red, player_turn)
                     VALUES (?, ?)";
                 $stmt = $this->conn->prepare($sql);

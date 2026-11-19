@@ -146,6 +146,9 @@
 
         public function handleGames(string $method, ?int $id) : void {
 
+            $token = $this->getApiToken();
+
+
             if($id !== null){
 
                 switch($method){
@@ -168,6 +171,12 @@
                 switch($method){
 
                     case "POST":
+
+                        if(!$token){
+                            http_response_code(401);
+                            echo json_encode(["message" => "Missing API token"]);
+                            return;
+                        }
                         $data = (array) json_decode(file_get_contents("php://input"), true);
 
                         if(empty($data["uid"]) || empty($data["color"])){
