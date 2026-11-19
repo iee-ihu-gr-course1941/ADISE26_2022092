@@ -101,7 +101,7 @@
 
         public function getGameByUser(string $uid) : ?array{
 
-            $sql = "SELECT * FROM games WHERE red = ? OR blue = ?";
+            $sql = "SELECT * FROM games WHERE (red = ? OR blue = ?) AND status <> 'finished'";
 
             $stmt = $this->conn->prepare($sql);
 

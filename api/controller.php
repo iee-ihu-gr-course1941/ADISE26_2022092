@@ -1,4 +1,5 @@
 <?php 
+//TODO CREATE GAME
     class controller{
 
         public function __construct(private gateway $gateway){
@@ -45,7 +46,7 @@
             if($id !== null){
 
                 switch($method){
-
+                    //not really needed
                     case "PATCH":
 
                         if(!$token){
@@ -177,6 +178,15 @@
                             echo json_encode(["message" => "Missing API token"]);
                             return;
                         }
+
+                        $user = $this->gateway->getUserByToken($token);
+
+                        if($user === null){
+                            http_response_code(404);
+                            echo json_encode("Didnt find user with the token used");
+                            return;
+                        }
+
                         $data = (array) json_decode(file_get_contents("php://input"), true);
 
                         if(empty($data["uid"]) || empty($data["color"])){
@@ -208,7 +218,6 @@
                         ]);
 
                         break;
-
                 }
             }
         }
