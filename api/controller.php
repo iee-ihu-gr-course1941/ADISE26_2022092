@@ -33,6 +33,7 @@
                 case "play":
                     break;
                 case "matchhistory":
+                    $this->handleMatchHistory($method, $id !== null ? (int) $id : null);
                     break;
                 default:
                     break;
@@ -303,6 +304,53 @@
                         break;
                 }
             }
+        }
+
+        public function handleMatchHistory(string $method, ?int $id) : void {
+
+            $token = $this->getApiToken();
+
+            if(!$token){
+                http_response_code(401);
+                echo json_encode(["message" => "Missing API token"]);
+                return;
+            }
+
+            if($id !== null){
+                
+                switch($method){
+                    
+                    case "GET":
+                        break;
+                    default:
+                        break;
+                }
+            }else{
+
+                switch($method){
+                    case "GET":
+
+                        $games = $this->gateway->getMatchHistory();
+
+                        if(empty($games)){
+                            http_response_code(400);
+                            echo json_encode([
+                                "message" => "No Games Recorded"
+                            ]);
+                        }
+
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "Match History",
+                            "games" => $games
+                        ]);
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+        
         }
     }
 ?>

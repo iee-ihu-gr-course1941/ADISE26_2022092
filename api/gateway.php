@@ -191,5 +191,13 @@
             return $stmt->fetch_all(MYSQLI_ASSOC);
 
         }
+
+        public function getMatchHistory() : ?array{
+            $sql = "SELECT * FROM games WHERE status = 'finished';";
+
+            $stmt = $this->conn->query($sql);
+
+            return $stmt->fetch_all(MYSQLI_ASSOC);
+        }
     }
 ?>
