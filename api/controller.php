@@ -88,7 +88,7 @@
                         }
                         $data = (array) json_decode(file_get_contents("php://input"), true);
                         $user = $this->gateway->getUserByToken($token);
-
+//
                         if($user === null){
                             http_response_code(404);
                             echo json_encode("User Not Found");
