@@ -277,7 +277,7 @@
                         ]);
 
                         break;
-                    //MAKE THIS GET ALL AVAILABLE GAMES
+                
                     case "GET":
                         
                         $games = $this->gateway->getAvailableGames();

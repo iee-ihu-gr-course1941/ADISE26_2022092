@@ -1,26 +1,43 @@
+--USER--
+
 GET USER: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users" \
   -H "Accept: application/json" \
-  -H "X-Token: b20bb1475c29359232954a1a7c8f81ab"
+  -H "X-Token: token"
 
 PATCH UPDATE USER: curl -i -X PATCH "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/{id}" \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
-  -H "X-Token: faac0b30c96c5413edab74f105cfcd9b" \
+  -H "X-Token: token" \
 
 DELETE DELETE USER: curl -i -X DELETE "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/{id}" \
-  -H "X-Token: e05bdd6a7800b5403bbc56513535479b" \
+  -H "X-Token: token" \
   -H "Accept: application/json"
+
+--GAMES--
 
 POST CREATE GAME: curl -X POST "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/games" \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
-  -H "X-Token: b20bb1475c29359232954a1a7c8f81ab" \
+  -H "X-Token: token" \
   -d '{
     "uid": "michlits",
     "color": "r"
   }'
 
+GET GAME: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/games/{id}" \
+  -H "Accept: application/json" \
+  -H "X-Token: token"
+
+GET AVAILABLE GAMES: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/games" \
+  -H "Accept: application/json" \
+  -H "X-Token: token"
+
 PATCH UPDATE GAME (JOIN GAME): curl -X PATCH "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/games/{id}" \
   -H "Accept: application/json" \
   -H "X-Token: token"
 
+--MATCH HISTORY--
+
+GET MATCH HISTORY: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/matchhistory" \
+  -H "Accept: application/json" \
+  -H "X-Token: token"
