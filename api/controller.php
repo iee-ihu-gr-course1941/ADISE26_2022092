@@ -116,7 +116,7 @@
                         break;
                     default:
                         http_response_code(405);
-                        header("Allow: POST, GET");
+                        header("Allow: GET");
                         break;
                 }
             }
@@ -337,7 +337,7 @@
             if($id !== null){
                 
                 switch($method){
-                    
+                    //TODO get match History of a single player
                     case "GET":
                         break;
                     default:
@@ -350,7 +350,7 @@
                 switch($method){
                     case "GET":
 
-                        $games = $this->gateway->getMatchHistory();
+                        $games = $this->gateway->getAllMatchHistory();
 
                         if(!$games){
                             http_response_code(400);

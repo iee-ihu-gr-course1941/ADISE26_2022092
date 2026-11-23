@@ -202,7 +202,7 @@
 
         }
 
-        public function getMatchHistory() : ?array{
+        public function getAllMatchHistory() : ?array{
             $sql = "SELECT * FROM games WHERE status = 'finished';";
 
             $stmt = $this->conn->query($sql);
