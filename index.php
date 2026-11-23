@@ -165,29 +165,14 @@
 
 	$resource = $parts[1];
 	$id = $parts[2] ?? null;
+	$profile = $parts[3] ?? null;
 
 	$method = $_SERVER["REQUEST_METHOD"];
-	/*make post request use patch or delete etc.
-	if($method === "POST"){
-		$headers = function_exists("getallheaders") ? array_change_key_case(getallheaders(), CASE_LOWER) : [];
-		$override = $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] ?? $headers["x-http-method-override"] ?? $_GET["_method"] ?? null;
-
-		if($override){
-			$method = strtoupper($override);
-		}
-	}
-	*/
+	
 	$controller = new controller($gateway);
 
-	$controller->processRequest($method, $resource, $id);
-	/*
-	$result = mysqli_query($conn, "SELECT DATABASE() AS current_db, USER() AS db_user");
-	$info = mysqli_fetch_assoc($result);
-
-	$sql = "SELECT * FROM ADISE26_2022092.users";
-	$resulttable = $conn ->query($sql);
-	$rows = $resulttable->fetch_all(MYSQLI_ASSOC);
-	*/
+	$controller->processRequest($method, $resource, $id, $profile);
+	
 
 	/* works, if not check with this
 	echo json_encode([

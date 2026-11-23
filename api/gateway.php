@@ -23,6 +23,20 @@
             return $token;
         }
 
+        public function getUser(string $uid) : ?array{
+
+            $sql = "SELECT * FROM users where uid = ?;";
+
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->bind_param("s", $uid);
+            $stmt->execute();
+
+            $user = $stmt->get_result->fetch_assoc();
+
+            return $user;
+        }
+
         public function getUserByToken(string $apiToken) : ?array {
 
             $sql = "SELECT * FROM users WHERE token = ?;";

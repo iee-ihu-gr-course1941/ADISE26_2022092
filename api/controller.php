@@ -21,11 +21,11 @@
             return null;
         } 
 
-        public function processRequest(string $method, ?string $resource, ?string $id) : void {
+        public function processRequest(string $method, ?string $resource, ?string $id, ?string $profile) : void {
 
             switch($resource){
                 case "users":
-                    $this->handleUsers($method, $id !== null ? (int) $id : null);
+                    $this->handleUsers($method, $id !== null ? (int) $id : null, $profile);
                     break;
                 case "games":
                     $this->handleGames($method, $id !== null ? (int) $id : null);
@@ -43,7 +43,7 @@
             }
         }
 
-        public function handleUsers(string $method, ?int $id) : void {
+        public function handleUsers(string $method, ?int $id, string $profile) : void {
 
             $token = $this->getApiToken();
 
@@ -59,6 +59,24 @@
                 http_response_code(404);
                 echo json_encode(["message" => "Didnt find user with the token used"]);
                 return;
+            }
+
+            if($profile !== null){
+
+                $user = $this->gateway->getUser($profile);
+
+                if(!$user){
+                    http_response_code(404);
+                    echo json_encode(["message" => "User Not Found"]);
+                    return;
+                }
+
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "User Found",
+                    "User:" => $user
+                ]);
+            
             }
 
             if($id !== null){
@@ -84,10 +102,6 @@
                             "rows affected" => $rows
                         ]);
                         break;
-                        //todo fix this
-                    case "GET":
-                        //echo json_encode($user);
-                        break; 
                     default:
                         http_response_code(405);
                         header("Allow: DELETE");
@@ -98,9 +112,6 @@
                 
                 switch($method){
 
-                    case "POST":
-                       
-                        break;
                     case "GET":
                         $users = $this->gateway->getAllUsers();
                         echo json_encode($users);
@@ -111,6 +122,8 @@
                         break;
                 }
             }
+
+            
         }
 
         public function handleGames(string $method, ?int $id) : void {
