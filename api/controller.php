@@ -37,7 +37,7 @@
                     $this->handleMatchHistory($method, $id !== null ? (int) $id : null);
                     break;
                 default:
-                    http_response_code(405);
+                    http_response_code(404);
                     echo json_encode(["message" => "Resource Not Found"]);
                     break;
             }
@@ -377,7 +377,7 @@
 
                         $updgame = $this->gateway->getGame($id);
 
-                        http_response_code(400);
+                        http_response_code(200);
                         echo json_encode([
                             "message" => "Game forfeited",
                             "game" => $updgame

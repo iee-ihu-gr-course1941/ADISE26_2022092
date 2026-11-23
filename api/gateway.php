@@ -1,4 +1,4 @@
-<?php //TODO getAvailableGames and getMatchHistory
+<?php     
     class gateway{
         private mysqli $conn;
 
@@ -108,11 +108,11 @@
                 $stmt->bind_param("s", $uid);
 
             }elseif($color === "r"){
-                $sql = "INSERT INTO games (red, player_turn)
-                    VALUES (?, ?);";
+                $sql = "INSERT INTO games (red)
+                    VALUES (?);";
                 $stmt = $this->conn->prepare($sql);
 
-                $stmt->bind_param("ss", $uid, $uid);
+                $stmt->bind_param("s", $uid);
 
             }else{
                 return false;
@@ -139,11 +139,11 @@
 
             if($game["red"] === null){
                 $sql = "UPDATE games
-                    SET red = ?, status = 'playing', player_turn = ?
+                    SET red = ?, status = 'playing'
                     WHERE id = ?;"
                 ;
                 $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param("ssi", $uid, $uid, $id);
+                $stmt->bind_param("si", $uid, $id);
             }else{
                 $sql = "UPDATE games
                     SET blue = ?, status = 'playing'
@@ -181,12 +181,62 @@
             return $stmt->fetch_all(MYSQLI_ASSOC);
         }
 
-        public function finishGame(int $id, string $winnerColor, string $winneruids){
+        public function finishGame(int $id, string $winnerColor, string $winneruid) : int{
 
+            $sql = "UPDATE games 
+                    SET status = 'finished', winner = ? 
+                    WHERE id = ?;"
+            ;
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("si", $winnerColor, $id);
+            $stmt ->execute();
+
+            $rows = $stmt->affected_rows;
+            $stmt->close();
+
+            if($rows > 0){
+                $sql = "UPDATE users
+                        SET wins = wins + 1
+                        WHERE uid = ?;";
+                ;
+
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("s", $winneruid);
+                $stmt->execute();
+                $stmt->close();
+            }
+
+            return $rows;
         }
 
-        public function playMove(int $id, string $newState, string $newStatus, string $winner, string $winneruid){
+        public function playMove(int $id, string $newState, string $newStatus, ?string $winner, ?string $winneruid){
+            
+            $sql = "UPDATE games
+                    SET board_state = ?, status = ?, winner = ?
+                    WHERE id = ?"
+            ;
 
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("sssi", $newState, $newStatus, $winner , $id);
+            $stmt->execute();
+
+            $rows = $stmt->affected_rows;
+            $stmt->close();
+
+            if($newStatus === "finished" && $winneruid !== null){
+                $sqlwins = "UPDATE users
+                            SET wins = wins + 1
+                            WHERE uid = ?"
+                ;
+
+                $stmtwins = $this->conn->prepare($sqlwins);
+                $stmtwins->bind_param("s" , $winneruid);
+                $stmtwins->execute();
+                $stmtwins->close();
+            }
+
+            return $rows;
         }
     }
 ?>
