@@ -9,11 +9,6 @@ GET ALL USERS:
   -H "Accept: application/json" \
   -H "X-Token: token"
 
-PATCH UPDATE USER: curl -i -X PATCH "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/{id}" \
-  -H "Accept: application/json" \
-  -H "Content-Type: application/json" \
-  -H "X-Token: token" \
-
 DELETE DELETE USER: curl -i -X DELETE "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/{id}" \
   -H "X-Token: token" \
   -H "Accept: application/json"

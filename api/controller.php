@@ -1,10 +1,7 @@
 <?php 
-//TODO implement play
     class controller{
 
-        public function __construct(private gateway $gateway){
-            
-        }
+        public function __construct(private gateway $gateway){}
 
         private function getApiToken() : ? string {
 
@@ -28,7 +25,7 @@
                     $this->handleUsers($method, $id);
                     break;
                 case "games":
-                    $this->handleGames($method, $id !== null ? (int) $id : null);
+                    $this->handleGames($method, $id);
                     break;
                 case "play":
                     $this->handlePlay($method, $id !== null ? (int) $id : null);
