@@ -45,6 +45,10 @@ GET MATCH HISTORY: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_20220
   -H "Accept: application/json" \
   -H "X-Token: token"
 
+GET USER MATCH HISTORY: curl -i -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/michlits" \
+  -H "Accept: application/json" \
+  -H "X-Token: token"
+
 --PLAY--
 
 POST PLAY MOVE: curl -X POST "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/play" \

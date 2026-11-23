@@ -17,5 +17,6 @@ All the end points must include the `X-Token` Header with the token every user r
 | `DELETE` | `/api/games/{id}` | — | Cancel/delete own waiting game |
 | `POST` | `/api/play` | `{"move":"e2"}` | Play a pawn move (`"e2"`) or wall (`"e4h"`, `"e2v"`) |
 | `PATCH` | `/api/play/{id}` | — | Forfeit active game |
-| `GET` | `/api/matchhistory` | — | Get finished games history |
+| `GET` | `/api/matchhistory` | — | Get match history |
+| `GET` | `/api/matchhistory/{userid}` | — | Get User match history |
 
