@@ -110,7 +110,7 @@
             return $game; 
         }
 
-        public function createGame(string $uid, string $color) : array | false {
+        public function createGame(string $uid, string $color) : ?array  {
 
             $sql = null;
 
@@ -129,7 +129,7 @@
                 $stmt->bind_param("s", $uid);
 
             }else{
-                return false;
+                return null;
             }
 
             $stmt->execute();

@@ -28,10 +28,10 @@
                     $this->handleGames($method, $id);
                     break;
                 case "play":
-                    $this->handlePlay($method, $id !== null ? (int) $id : null);
+                    $this->handlePlay($method, $id);
                     break;
                 case "matchhistory":
-                    $this->handleMatchHistory($method, $id !== null ? (int) $id : null);
+                    $this->handleMatchHistory($method, $id);
                     break;
                 default:
                     http_response_code(404);
