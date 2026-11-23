@@ -84,6 +84,10 @@
                             "rows affected" => $rows
                         ]);
                         break;
+                        //todo fix this
+                    case "GET":
+                        //echo json_encode($user);
+                        break; 
                     default:
                         http_response_code(405);
                         header("Allow: DELETE");
@@ -98,7 +102,8 @@
                        
                         break;
                     case "GET":
-                        echo json_encode($user);
+                        $users = $this->gateway->getAllUsers();
+                        echo json_encode($users);
                         break;
                     default:
                         http_response_code(405);

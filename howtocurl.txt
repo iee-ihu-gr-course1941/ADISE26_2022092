@@ -3,6 +3,11 @@
 GET USER: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users" \
   -H "Accept: application/json" \
   -H "X-Token: token"
+  
+GET USER:
+  curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users" \
+  -H "Accept: application/json" \
+  -H "X-Token: token"
 
 PATCH UPDATE USER: curl -i -X PATCH "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/{id}" \
   -H "Accept: application/json" \
@@ -20,7 +25,6 @@ POST CREATE GAME: curl -X POST "https://users.iee.ihu.gr/~michlits/ADISE26_20220
   -H "Content-Type: application/json" \
   -H "X-Token: token" \
   -d '{
-    "uid": "michlits",
     "color": "r"
   }'
 
@@ -43,3 +47,18 @@ GET MATCH HISTORY: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_20220
   -H "X-Token: token"
 
 --PLAY--
+
+POST PLAY MOVE: curl -X POST "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/play" \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "X-Token: token" \
+  -d '{
+    "move": "e2"
+  }'
+
+(for vertical wall "e2v" wall from e2 to e3)
+(for horizontal wall "e2h" wall from e2 to e3)
+
+PATCH FORFEIT: curl -X PATCH "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/play/{id}" \
+  -H "Accept: application/json" \
+  -H "X-Token: token"
