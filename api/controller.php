@@ -83,7 +83,7 @@
                         $rows = $this->gateway->deleteUser($user["id"]);
 
                         if($rows === 0){
-                            http_response_code(400);
+                            http_response_code(403);
                             echo json_encode([
                                 "message" => "Couldnt Delete User",
                                 "rows" => $rows
@@ -99,7 +99,7 @@
                         break;
                     default:
                         http_response_code(405);
-                        header("Allow: DELETE");
+                        header("Allow: GET, DELETE");
                         break;
                     
                 }
@@ -148,7 +148,6 @@
                         $game = $this->gateway->getGame($id);
                          
                         if(!$game){
-
                             http_response_code(404);
                             echo json_encode(["message" => "Game Not Found"]);
                             return;
@@ -161,7 +160,7 @@
                         $game = $this->gateway->getGameByUser($user["uid"]);
 
                         if($game){
-                            http_response_code(422);
+                            http_response_code(409);
                             echo json_encode(["message" => "This User is Arleady In-Game or Waiting"]);
                             return;
                         }
@@ -175,7 +174,7 @@
                         }
 
                         if($game["status"] === "playing"){
-                            http_response_code(409);
+                            http_response_code(403);
                             echo json_encode([
                                 "message" => "This Game is Already In-Progress",
                                 "game" => $game
@@ -184,7 +183,7 @@
                         }
 
                         if($game["status"] === "finished"){
-                            http_response_code(409);
+                            http_response_code(403);
                             echo json_encode([
                                 "message" => "This Game is Already Finished",
                                 "game" => $game
@@ -222,7 +221,7 @@
                         }
 
                         if($game["red"] !== $user["uid"] && $game["blue"] !== $user["uid"]){
-                            http_response_code(409);
+                            http_response_code(403);
                             echo json_encode(["message" => "Could Not Delete Game"]);
                             return;
                         }
@@ -264,7 +263,7 @@
                         $game = $this->gateway->getGameByUser($user["uid"]);
 
                         if($game){
-                            http_response_code(422);
+                            http_response_code(409);
                             echo json_encode(["message" => "User is already participating in a game"]);
                             return;
                         }
@@ -272,7 +271,7 @@
                         $game = $this->gateway->createGame($user["uid"], $data["color"]);
 
                         if(!$game){
-                            http_response_code(422);
+                            http_response_code(409);
                             echo json_encode(["message" => "Couldnt Create Game"]);
                             return;
                         }
@@ -290,7 +289,7 @@
                         $games = $this->gateway->getAvailableGames();
 
                         if(!$games){
-                            http_response_code(400);
+                            http_response_code(200);
                             echo json_encode([
                                 "message" => "No Available Games",
                             ]);
@@ -350,7 +349,7 @@
                         $games = $this->gateway->getAllMatchHistory();
 
                         if(!$games){
-                            http_response_code(400);
+                            http_response_code(200);
                             echo json_encode([
                                 "message" => "No Games Recorded"
                             ]);
@@ -399,7 +398,7 @@
             }
 
             if($game["status"] !== "playing"){
-                http_response_code(403);
+                http_response_code(409);
                 echo json_encode(["message" => "This game is not in play"]);
                 return;
             }
@@ -410,7 +409,7 @@
                     case "PATCH"://forfeit
 
                         if($game["id"] !== $id){
-                            http_response_code(405);
+                            http_response_code(403);
                             echo json_encode(["message" => "Game ID does not match your active game ID"]);
                             return;
                         }
@@ -453,13 +452,13 @@
                         $data = (array) json_decode(file_get_contents("php://input"), true);
 
                         if(empty($data["move"])){
-                            http_response_code(422);
+                            http_response_code(409);
                             echo json_encode(["message" => "Move Notations is required"]);
                             return;
                         }
 
                         if(!$board->move($data["move"])){
-                            http_response_code(422);
+                            http_response_code(409);
                             echo json_encode(["message" => "Illegal Move"]);
                             return;
                         }
