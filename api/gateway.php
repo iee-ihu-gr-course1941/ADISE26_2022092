@@ -178,7 +178,7 @@
         }
 
         public function deleteGame(string $id) : int {
-            $sql = "DELETE FROM games WHERE id = ?;";
+            $sql = "DELETE FROM games WHERE id = ?; AND status ='waiting'";
 
             $stmt = $this->conn->prepare($sql);
 
