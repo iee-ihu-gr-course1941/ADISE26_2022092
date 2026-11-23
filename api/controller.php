@@ -312,7 +312,7 @@
             }
         }
 
-        public function handleMatchHistory(string $method, ?int $id) : void {
+        public function handleMatchHistory(string $method, ?string $id) : void {
 
             $token = $this->getApiToken();
 
