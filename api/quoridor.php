@@ -90,15 +90,20 @@
         public function move(string $notation) : bool {
             $notation = strtolower(trim($notation));
 
-            if(strlen($notation) === 2){
-                return $this->movePawn($notation);
+            try{
+                if(strlen($notation) === 2){
+                    return $this->movePawn($notation);
+                }
+
+                if(strlen($notation) === 3 && in_array($notation[2], ["h", "v"], true)){
+                    return $this->placeWall(substr($notation, 0, 2), $notation[2]);
+                }
+
+            }catch (InvalidArgumentException){
+                return false;
             }
 
-            if(strlen($notation) === 3 && in_array($notation[2], ["h", "v"], true)){
-                return $this->placeWall(substr($notation, 0, 2), $notation[2]);
-            }
-
-            return false;
+            return false;            
         }
 
         public function movePawn(string $to) : bool {
@@ -253,7 +258,7 @@
         }
 
         private function squareToCoordinates(string $square): array {
-            if (strlen($square) !== 2) {
+            if (!preg_match("/^[a-i][1-9]$/i", $square)){
                 throw new InvalidArgumentException("Invalid square notation: $square");
             }
 

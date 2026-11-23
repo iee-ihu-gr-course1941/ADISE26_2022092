@@ -7,7 +7,6 @@ CREATE TABLE ADISE26_2022092.users (
     wins INT NOT NULL DEFAULT 0
 );
 
---Might need adjustements
 DROP TABLE IF EXISTS games;
 
 CREATE TABLE IF NOT EXISTS games (
@@ -16,7 +15,8 @@ CREATE TABLE IF NOT EXISTS games (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     red VARCHAR(50),
     blue VARCHAR(50),
-    player_turn VARCHAR(50)
+    winner ENUM('r', 'b') DEFAULT NULL,
+    board_state VARCHAR(255) NOT NULL DEFAULT 'e1/e9 - - r 10/10'
 );
 
 	

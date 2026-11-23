@@ -85,7 +85,7 @@
 
         public function getGame(int $id) : ?array {
 
-            $sql = "SELECT * FROM games WHERE id = ? AND status <> 'finished';";
+            $sql = "SELECT * FROM games WHERE id = ?;";
 
             $stmt = $this->conn->prepare($sql);
 
@@ -115,23 +115,23 @@
             return $game; 
         }
 
-        public function createGame(array $data) : array | false {
+        public function createGame(string $uid, string $color) : array | false {
 
             $sql = null;
 
-            if($data["color"] === "b"){
+            if($color === "b"){
                 $sql = "INSERT INTO games (blue)
                     VALUES (?);";
                 $stmt = $this->conn->prepare($sql);
 
-                $stmt->bind_param("s", $data["uid"]);
+                $stmt->bind_param("s", $uid);
 
-            }elseif($data["color"] === "r"){
+            }elseif($color === "r"){
                 $sql = "INSERT INTO games (red, player_turn)
                     VALUES (?, ?);";
                 $stmt = $this->conn->prepare($sql);
 
-                $stmt->bind_param("ss", $data["uid"], $data["uid"]);
+                $stmt->bind_param("ss", $uid, $uid);
 
             }else{
                 return false;

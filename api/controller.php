@@ -1,5 +1,5 @@
 <?php 
-//TODO CREATE GAME
+//TODO implement play
     class controller{
 
         public function __construct(private gateway $gateway){
@@ -31,11 +31,14 @@
                     $this->handleGames($method, $id !== null ? (int) $id : null);
                     break;
                 case "play":
+                    $this->handlePlay($method, $id !== null ? (int) $id : null);
                     break;
                 case "matchhistory":
                     $this->handleMatchHistory($method, $id !== null ? (int) $id : null);
                     break;
                 default:
+                    http_response_code(405);
+                    echo json_encode(["message" => "Resource Not Found"]);
                     break;
             }
         }
@@ -50,24 +53,23 @@
                 return;
             }
 
+            $user = $this->gateway->getUserByToken($token);
+
+            if(!$user){
+                http_response_code(404);
+                echo json_encode(["message" => "Didnt find user with the token used"]);
+                return;
+            }
+
             if($id !== null){
 
                 switch($method){
                     //not really needed
                     case "PATCH":
 
-                        $data = (array) json_decode(file_get_contents("php://input"), true);
-                        $user = $this->gateway->getUserByToken($token);
-
-                        if($user === null){
-                            http_response_code(404);
-                            echo json_encode("User Not Found");
-                            return;
-                        }
-
                         $upduser = $this->gateway->updateUser($user);
 
-                        if($upduser === null){
+                        if(!$upduser){
                             http_response_code(403);
                             echo json_encode([
                                 "message" => "Couldnt Update User",
@@ -82,15 +84,6 @@
                         ]);
                         break;
                     case "DELETE":
-
-                        $data = (array) json_decode(file_get_contents("php://input"), true);
-                        $user = $this->gateway->getUserByToken($token);
-
-                        if($user === null){
-                            http_response_code(404);
-                            echo json_encode("User Not Found");
-                            return;
-                        }
 
                         $rows = $this->gateway->deleteUser($user["id"]);
 
@@ -120,20 +113,9 @@
                 switch($method){
 
                     case "POST":
-                        $data = (array) json_decode(file_get_contents("php://input"), true);
-                        
+                       
                         break;
                     case "GET":
-                        $user = $this->gateway->getUserByToken($token);
-
-                        if(empty($user)){
-                            http_response_code(404);
-                            echo json_encode([
-                                "message" => "User Not Found",
-                            ]);
-                            return;
-                        }
-
                         echo json_encode($user);
                         break;
                     default:
@@ -145,13 +127,20 @@
         }
 
         public function handleGames(string $method, ?int $id) : void {
-            //TODO create GET to get all waiting games
-
+            
             $token = $this->getApiToken();
 
             if(!$token){
                 http_response_code(401);
                 echo json_encode(["message" => "Missing API token"]);
+                return;
+            }
+
+            $user = $this->gateway->getUserByToken($token);
+
+            if(!$user){
+                http_response_code(404);
+                echo json_encode(["message" => "Didnt find user with the token used"]);
                 return;
             }
 
@@ -162,7 +151,7 @@
                     case "GET":
                         $game = $this->gateway->getGame($id);
                         
-                        if($game === null){
+                        if(!$game){
 
                             http_response_code(404);
                             echo json_encode(["message" => "Game Not Found"]);
@@ -173,19 +162,9 @@
                         break;
                     case "PATCH":
 
-                        $user = $this->gateway->getUserByToken($token);
-
-                        if(empty($user)){
-                            http_response_code(404);
-                            echo json_encode([
-                                "message" => "User Not Found",
-                            ]);
-                            return;
-                        }
-
                         $game = $this->gateway->getGameByUser($user["uid"]);
 
-                        if(!empty($game)){
+                        if($game){
                             http_response_code(422);
                             echo json_encode(["message" => "This User is Arleady In-Game or Waiting"]);
                             return;
@@ -193,7 +172,7 @@
 
                         $game = $this->gateway->getGame($id);
 
-                        if(empty($game)){
+                        if(!$game){
                             http_response_code(404);
                             echo json_encode(["message" => "Game Not Found"]);
                             return;
@@ -203,6 +182,15 @@
                             http_response_code(409);
                             echo json_encode([
                                 "message" => "This Game is Already In-Progress",
+                                "game" => $game
+                            ]);
+                            return;
+                        }
+
+                        if($game["status"] === "finished"){
+                            http_response_code(409);
+                            echo json_encode([
+                                "message" => "This Game is Already Finished",
                                 "game" => $game
                             ]);
                             return;
@@ -238,31 +226,23 @@
 
                     case "POST":
 
-                        $user = $this->gateway->getUserByToken($token);
-
-                        if($user === null){
-                            http_response_code(404);
-                            echo json_encode("Didnt find user with the token used");
-                            return;
-                        }
-
                         $data = (array) json_decode(file_get_contents("php://input"), true);
 
-                        if(empty($data["uid"]) || empty($data["color"])){
+                        if(empty($data["color"])){
                             http_response_code(422);
-                            echo json_encode(["message" => "userid and color are required"]);
+                            echo json_encode(["message" => "color is required"]);
                             return;
                         }
 
-                        $game = $this->gateway->getGameByUser($data["uid"]);
+                        $game = $this->gateway->getGameByUser($user["uid"]);
 
-                        if(($game) !== null){
+                        if($game){
                             http_response_code(422);
                             echo json_encode(["message" => "User is already participating in a game"]);
                             return;
                         }
 
-                        $game = $this->gateway->createGame($data);
+                        $game = $this->gateway->createGame($user["uid"], $data["color"]);
 
                         if(!$game){
                             http_response_code(422);
@@ -282,7 +262,7 @@
                         
                         $games = $this->gateway->getAvailableGames();
 
-                        if(empty($games)){
+                        if(!$games){
                             http_response_code(400);
                             echo json_encode([
                                 "message" => "No Available Games",
@@ -316,6 +296,14 @@
                 return;
             }
 
+            $user = $this->gateway->getUserByToken($token);
+
+            if(!$user){
+                http_response_code(404);
+                echo json_encode(["message" => "Didnt find user with the token used"]);
+                return;
+            }
+
             if($id !== null){
                 
                 switch($method){
@@ -323,6 +311,8 @@
                     case "GET":
                         break;
                     default:
+                        http_response_code(405);
+                        header("Allow: GET");
                         break;
                 }
             }else{
@@ -332,11 +322,12 @@
 
                         $games = $this->gateway->getMatchHistory();
 
-                        if(empty($games)){
+                        if(!$games){
                             http_response_code(400);
                             echo json_encode([
                                 "message" => "No Games Recorded"
                             ]);
+                            return;
                         }
 
                         http_response_code(200);
@@ -347,10 +338,59 @@
 
                         break;
                     default:
+                        http_response_code(405);
+                        header("Allow: GET");
                         break;
                 }
             }
-        
+        }
+
+        public function handlePlay(string $method, ?int $id) : void{
+
+            $token = $this->getApiToken();
+
+            if(!$token){
+                http_response_code(401);
+                echo json_encode(["message" => "Missing API token"]);
+                return;
+            }
+
+            $user = $this->gateway->getUserByToken($token);
+
+            if(!$user){
+                http_response_code(404);
+                echo json_encode(["message" => "Didnt find user with the token used"]);
+                return;
+            }
+
+            if($id !== null){
+
+                switch($method){
+                    case "PATCH"://forfeit
+                        break;
+                    default:
+                        http_response_code(405);
+                        header("Allow: PATCH");
+                        break;
+                }
+
+            }else{
+                switch($method){
+                    case "POST"://play move
+
+                        $data = (array) json_decode(file_get_contents("php://input"), true);
+
+                        $game = $this->gateway->getGameByUser($user["uid"]);
+
+
+                        break;
+                    default:
+                        http_response_code(405);
+                        header("Allow: POST");
+                        break;
+                }
+
+            }
         }
     }
 ?>
