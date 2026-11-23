@@ -332,9 +332,23 @@
 
             if($id !== null){
                 
+                $user = $this->gateway->getUser($id);
+
+                if(!$user){
+                    http_response_code(404);
+                    echo json_encode(["message" => "User Not Found"]);
+                    return;
+                }
                 switch($method){
                     //TODO get match History of a single player
                     case "GET":
+                        $history = $this->gateway->getPlayerHistory($id);
+
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "Match History Fetched",
+                            "Match History" => $history
+                        ]);
                         break;
                     default:
                         http_response_code(405);

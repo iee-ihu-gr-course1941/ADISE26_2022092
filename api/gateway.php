@@ -267,5 +267,20 @@
 
             return $rows;
         }
+
+        public function getPlayerHistory(string $uid) : ?array{
+
+            $sql = "SELECT * FROM games WHERE uid = ?;";
+
+            $stmt= $this->conn->prepare($sql);
+            $stmt->bind_param("s", $uid);
+            $stmt->execute();
+
+            $history = $stmt->get_result()->fetch_assoc();
+
+            $stmt->close();
+
+            return $history;
+        }
     }
 ?>
