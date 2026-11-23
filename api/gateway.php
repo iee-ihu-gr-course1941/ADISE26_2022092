@@ -32,7 +32,7 @@
             $stmt->bind_param("s", $uid);
             $stmt->execute();
 
-            $user = $stmt->get_result->fetch_assoc();
+            $user = $stmt->get_result()->fetch_assoc();
 
             return $user;
         }
