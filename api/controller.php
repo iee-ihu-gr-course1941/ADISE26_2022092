@@ -64,25 +64,7 @@
             if($id !== null){
 
                 switch($method){
-                    //not really needed
-                    case "PATCH":
-
-                        $upduser = $this->gateway->updateUser($user);
-
-                        if(!$upduser){
-                            http_response_code(403);
-                            echo json_encode([
-                                "message" => "Couldnt Update User",
-                            ]);
-                            return;
-                        }
-                        
-                        http_response_code(200);
-                        echo json_encode([
-                            "message" => "User Updated Successfully",
-                            "Updated User" => $upduser
-                        ]);
-                        break;
+                    
                     case "DELETE":
 
                         $rows = $this->gateway->deleteUser($user["id"]);
@@ -104,7 +86,7 @@
                         break;
                     default:
                         http_response_code(405);
-                        header("Allow: PATCH, DELETE");
+                        header("Allow: DELETE");
                         break;
                     
                 }
@@ -363,10 +345,44 @@
                 return;
             }
 
+            $game = $this->gateway->getGameByUser($user["uid"]);
+
+            if(!$game){
+                http_response_code(404);
+                echo json_encode(["message" => "Didnt find a game where this user is participating"]);
+                return;
+            }
+
+            if($game["status"] !== "playing"){
+                http_response_code(403);
+                echo json_encode(["message" => "This game is not in play"]);
+                return;
+            }
+
             if($id !== null){
 
                 switch($method){
                     case "PATCH"://forfeit
+
+                        if($game["id"] !== $id){
+                            http_response_code(405);
+                            echo json_encode(["message" => "Game ID does not match your active game ID"]);
+                            return;
+                        }
+
+                        $winnerColor = ($game["red"] === $user["uid"]) ? "b" : "r";
+                        $winneruid = ($winnerColor === "r") ? $game["red"] : $game["blue"];
+
+                        $this->gateway->finishGame($id, $winnerColor, $winneruid);
+
+                        $updgame = $this->gateway->getGame($id);
+
+                        http_response_code(400);
+                        echo json_encode([
+                            "message" => "Game forfeited",
+                            "game" => $updgame
+                        ]);
+
                         break;
                     default:
                         http_response_code(405);
@@ -378,11 +394,44 @@
                 switch($method){
                     case "POST"://play move
 
+                        $board = new quoridor(($game["board_state"]));
+
+                        $activeColor = $board->getActiveColor();
+                        $turnuid = ($activeColor === "r") ? $game["red"] : $game["blue"];
+
+                        if($user["uid"] !== $turnuid){
+                            http_response_code(403);
+                            echo json_encode(["message" => "Not this user's turn"]);
+                            return;
+                        }
+
                         $data = (array) json_decode(file_get_contents("php://input"), true);
 
-                        $game = $this->gateway->getGameByUser($user["uid"]);
+                        if(empty($data["move"])){
+                            http_response_code(422);
+                            echo json_encode(["message" => "Move Notations is required"]);
+                            return;
+                        }
 
+                        if(!$board->move($data["move"])){
+                            http_response_code(422);
+                            echo json_encode(["message" => "Illegal Move"]);
+                            return;
+                        }
 
+                        $newState = $board->toState();
+                        $winner = $board->getWinner();
+                        $newStatus = ($winner !== null) ? "finished" : "playing";
+                        $winneruid = ($winner === "r") ? $game["red"] : (($winner === "b") ? $game["blue"] : null);
+
+                        $this->gateway->playMove($game["id"], $newState, $newStatus, $winner, $winneruid);
+                        $updgame = $this->gateway->getGame($game["id"]);
+
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => $winner ? "Move played - You win!" : "Move played",
+                            "game" => $updgame
+                        ]);
                         break;
                     default:
                         http_response_code(405);

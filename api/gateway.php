@@ -48,25 +48,6 @@
             return $stmt->fetch_all(MYSQLI_ASSOC);
         }
 
-        public function updateUser(array $curruser) : ?array {
-
-            $sql = "UPDATE users 
-                    SET wins = wins + 1
-                    WHERE uid = ?;"
-            ;
-
-            $stmt = $this->conn->prepare($sql);
-
-            $stmt->bind_param("s", $curruser["uid"]);
-            $stmt->execute();
-            $stmt->close();
-
-            $upduser = $this->getUserByToken($curruser["token"]);
-
-            return $upduser;
-
-        }
-
         public function deleteUser(int $id) : int {
 
             $sql = "DELETE FROM users WHERE id = ?;";
@@ -198,6 +179,14 @@
             $stmt = $this->conn->query($sql);
 
             return $stmt->fetch_all(MYSQLI_ASSOC);
+        }
+
+        public function finishGame(int $id, string $winnerColor, string $winneruids){
+
+        }
+
+        public function playMove(int $id, string $newState, string $newStatus, string $winner, string $winneruid){
+
         }
     }
 ?>
