@@ -270,7 +270,7 @@
 
         public function getPlayerHistory(string $uid) : ?array{
 
-            $sql = "SELECT * FROM games WHERE uid = ?;";
+            $sql = "SELECT * FROM games WHERE red = ? OR blue = ?;";
 
             $stmt= $this->conn->prepare($sql);
             $stmt->bind_param("s", $uid);
