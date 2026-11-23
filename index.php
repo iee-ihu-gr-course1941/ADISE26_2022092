@@ -165,13 +165,12 @@
 
 	$resource = $parts[1];
 	$id = $parts[2] ?? null;
-	$profile = $parts[3] ?? null;
-
+	
 	$method = $_SERVER["REQUEST_METHOD"];
 	
 	$controller = new controller($gateway);
 
-	$controller->processRequest($method, $resource, $id, $profile);
+	$controller->processRequest($method, $resource, $id);
 	
 
 	/* works, if not check with this

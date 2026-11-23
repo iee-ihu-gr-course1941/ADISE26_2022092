@@ -21,11 +21,11 @@
             return null;
         } 
 
-        public function processRequest(string $method, ?string $resource, ?string $id, ?string $profile) : void {
+        public function processRequest(string $method, ?string $resource, ?string $id) : void {
 
             switch($resource){
                 case "users":
-                    $this->handleUsers($method, $id !== null ? (int) $id : null, $profile);
+                    $this->handleUsers($method, $id);
                     break;
                 case "games":
                     $this->handleGames($method, $id !== null ? (int) $id : null);
@@ -43,7 +43,7 @@
             }
         }
 
-        public function handleUsers(string $method, ?int $id, ?string $profile) : void {
+        public function handleUsers(string $method, ?string $id) : void {
 
             $token = $this->getApiToken();
 
@@ -61,27 +61,25 @@
                 return;
             }
 
-            if($profile !== null){
-
-                $user = $this->gateway->getUser($profile);
-
-                if(!$user){
-                    http_response_code(404);
-                    echo json_encode(["message" => "User Not Found"]);
-                    return;
-                }
-
-                http_response_code(200);
-                echo json_encode([
-                    "message" => "User Found",
-                    "User:" => $user
-                ]);
-            
-            }
-
             if($id !== null){
 
                 switch($method){
+
+                    case "GET":
+                        $user = $this->gateway->getUser($id);
+
+                        if(!$user){
+                            http_response_code(404);
+                            echo json_encode(["message" => "User Not Found"]);
+                            return;
+                        }
+
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "User Found",
+                            "User" => $user
+                        ]);
+                        break;
                     
                     case "DELETE":
 
