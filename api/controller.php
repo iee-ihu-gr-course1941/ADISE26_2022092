@@ -346,8 +346,8 @@
 
                         http_response_code(200);
                         echo json_encode([
-                            "message" => "Match History Fetched",
-                            "Match History" => $history
+                            "message" => "Match History",
+                            "games" => $history
                         ]);
                         break;
                     default:
