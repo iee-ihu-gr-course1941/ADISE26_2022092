@@ -43,7 +43,7 @@
             }
         }
 
-        public function handleUsers(string $method, ?int $id, string $profile) : void {
+        public function handleUsers(string $method, ?int $id, ?string $profile) : void {
 
             $token = $this->getApiToken();
 

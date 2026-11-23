@@ -1,11 +1,11 @@
 --USER--
 
-GET USER: curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users" \
+GET USER: curl -i -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users/michlits" \
   -H "Accept: application/json" \
   -H "X-Token: token"
-  
-GET USER:
-  curl -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users" \
+
+GET ALL USERS:
+  curl -i -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users" \
   -H "Accept: application/json" \
   -H "X-Token: token"
 
