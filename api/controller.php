@@ -344,6 +344,14 @@
                     case "GET":
                         $history = $this->gateway->getPlayerHistory($id);
 
+                        if(!$history){
+                            http_response_code(200);
+                            echo json_encode([
+                                "message" => "No Games Recorded"
+                            ]);
+                            return;
+                        }
+
                         http_response_code(200);
                         echo json_encode([
                             "message" => "Match History",
