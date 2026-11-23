@@ -273,7 +273,7 @@
             $sql = "SELECT * FROM games WHERE red = ? OR blue = ?;";
 
             $stmt= $this->conn->prepare($sql);
-            $stmt->bind_param("s", $uid);
+            $stmt->bind_param("ss", $uid, $uid);
             $stmt->execute();
 
             $history = $stmt->get_result()->fetch_assoc();
