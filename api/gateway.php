@@ -177,6 +177,21 @@
 
         }
 
+        public function deleteGame(string $id) : int {
+            $sql = "DELETE FROM games WHERE id = ?;";
+
+            $stmt = $this->conn->prepare($sql);
+
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            
+            $rows = $stmt->affected_rows;
+
+            $stmt->close();
+
+            return $rows;
+        }
+
         public function getAvailableGames() : ?array{
 
             $sql = "SELECT * FROM games WHERE status = 'waiting';";

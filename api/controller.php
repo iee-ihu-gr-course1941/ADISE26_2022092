@@ -147,8 +147,9 @@
                 switch($method){
 
                     case "GET":
+
                         $game = $this->gateway->getGame($id);
-                        
+                         
                         if(!$game){
 
                             http_response_code(404);
@@ -212,7 +213,38 @@
                         ]);
 
                         break;
+                    
+                    case "DELETE":
 
+                        $game = $this->gateway->getGame($id);
+                         
+                        if(!$game){
+                            http_response_code(404);
+                            echo json_encode(["message" => "Game Not Found"]);
+                            return;
+                        }
+
+                        if($game["id"] !== $user["uid"]){
+                            http_response_code(409);
+                            echo json_encode(["message" => "Could Not Delete Game"]);
+                            return;
+                        }
+
+                        $rows = $this->gateway->deleteGame($game["id"]);
+
+                        if($rows === 0){
+                            http_response_code(403);
+                            echo json_encode(["message" => "Could Not Delete Game"]);
+                            return;
+                        }
+
+                        http_response_code(200);
+                        echo json_encode([
+                            "message" => "Game Deleted Successfully",
+                            "rows" => $rows,
+                        ]);
+                    
+                        break;
                     default:
                         http_response_code(405);
                         header("Allow: GET, PATCH");
