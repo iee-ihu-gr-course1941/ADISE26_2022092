@@ -224,7 +224,7 @@
                             return;
                         }
 
-                        if($game["red"] === $user["uid"] || $game["blue"] === $user["uid"]){
+                        if($game["red"] !== $user["uid"] || $game["blue"] !== $user["uid"]){
                             http_response_code(409);
                             echo json_encode(["message" => "Could Not Delete Game"]);
                             return;
