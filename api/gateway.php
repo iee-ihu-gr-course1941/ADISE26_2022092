@@ -25,7 +25,7 @@
 
         public function getUser(string $uid) : ?array{
 
-            $sql = "SELECT * FROM users where uid = ?;";
+            $sql = "SELECT uid, wins FROM users where uid = ?;";
 
             $stmt = $this->conn->prepare($sql);
 
