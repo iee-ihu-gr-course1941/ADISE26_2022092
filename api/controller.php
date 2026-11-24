@@ -203,7 +203,7 @@
 
                         http_response_code(200);
                         echo json_encode([
-                            "message" => "Game Joint Successfully",
+                            "message" => "Game Joined Successfully",
                             "rows" => $rows,
                             "game" => $updatedGame 
                         ]);
@@ -426,9 +426,8 @@
             }
 
             //check for timeout
-
-            $lastmove = $game["created_at"];
-            $now = new DateTimeImmutable('now');
+            $lastmove = new DateTimeImmutable($game["created_at"]);
+            $now = new DateTimeImmutable("now");
 
             $seconds = $now->getTimestamp() - $lastmove->getTimestamp();
 
@@ -448,15 +447,22 @@
 
                 $rows = $this->gateway->finishGame($game["id"],$winnerColor,$winneruid);
 
+                $updgame = $this->gateway->getGame($game["id"]);
+
                 if($rows === 0){
                     http_response_code(403);
-                    echo json_encode(["message" => "This game has expired and no winner was set"]);
+                    echo json_encode([
+                        "message" => "This game has expired and no winner was set",
+                        "game" => $updgame
+                        ]);
                     return;
                 }else{
+                    
+
                     http_response_code(200);
                     echo json_encode([
                         "message" => "This game has expired",
-                        "game" => $game
+                        "game" => $updgame
                     ]);
                     return;
                 }
