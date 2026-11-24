@@ -242,7 +242,7 @@
         public function playMove(int $id, string $newState, string $newStatus, ?string $winner, ?string $winneruid){
             
             $sql = "UPDATE games
-                    SET board_state = ?, status = ?, winner = ?
+                    SET board_state = ?, status = ?, winner = ?, created_at = NOW()
                     WHERE id = ?"
             ;
 
