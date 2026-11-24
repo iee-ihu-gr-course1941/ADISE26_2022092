@@ -1,7 +1,7 @@
 <?php 
 	//class names should be lowercase cause debian on users cant find them
-	//works for GET
-	//TODO implement curl and use controller->processRequest for different HTTP methods
+	//TODO implement frontend with curl
+	//TODO implement timeout on player turn
 	declare(strict_types=1);
 
 	require_once __DIR__ . "/config.php";
@@ -172,7 +172,6 @@
 
 	$controller->processRequest($method, $resource, $id);
 	
-
 	/* works, if not check with this
 	echo json_encode([
 		"status" => "Connected successfully through ssh",

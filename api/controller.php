@@ -340,7 +340,7 @@
                     return;
                 }
                 switch($method){
-                    //TODO get match History of a single player
+                    
                     case "GET":
                         $history = $this->gateway->getPlayerHistory($id);
 
@@ -425,6 +425,42 @@
                 return;
             }
 
+            //check for timeout
+
+            $lastmove = $game["created_at"];
+            $now = new DateTimeImmutable('now');
+
+            $seconds = $now->getTimestamp() - $lastmove->getTimestamp();
+
+            if($seconds > 10){
+                //timeout
+                $board = new quoridor($game["board_state"]);
+
+                $activeColor = $board->getActiveColor();
+                
+                if($activeColor === "r"){
+                    $winnerColor = "b";
+                    $winneruid = $game["blue"]; 
+                }else{
+                    $winnerColor = "r";
+                    $winneruid = $game["red"];
+                }
+
+                $rows = $this->gateway->finishGame($game["id"],$winnerColor,$winneruid);
+
+                if($rows === 0){
+                    http_response_code(403);
+                    echo json_encode(["message" => "This game has expired and no winner was set"]);
+                    return;
+                }else{
+                    http_response_code(200);
+                    echo json_encode([
+                        "message" => "This game has expired",
+                        "game" => $game
+                    ]);
+                    return;
+                }
+            }
             if($id !== null){
 
                 switch($method){
@@ -460,7 +496,7 @@
                 switch($method){
                     case "POST"://play move
 
-                        $board = new quoridor(($game["board_state"]));
+                        $board = new quoridor($game["board_state"]);
 
                         $activeColor = $board->getActiveColor();
                         $turnuid = ($activeColor === "r") ? $game["red"] : $game["blue"];
