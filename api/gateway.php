@@ -96,7 +96,7 @@
 
         public function getGameByUser(string $uid) : ?array{
 
-            $sql = "SELECT * FROM games WHERE (red = ? OR blue = ?) AND status <> 'finished';";
+            $sql = "SELECT *, TIMESTAMPDIFF(SECOND, created_at, NOW()) AS elapsed_seconds FROM games WHERE (red = ? OR blue = ?) AND status <> 'finished';";
 
             $stmt = $this->conn->prepare($sql);
 
@@ -153,14 +153,14 @@
 
             if($game["red"] === null){
                 $sql = "UPDATE games
-                    SET red = ?, status = 'playing'
+                    SET red = ?, status = 'playing', created_at = NOW()
                     WHERE id = ?;"
                 ;
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bind_param("si", $uid, $id);
             }else{
                 $sql = "UPDATE games
-                    SET blue = ?, status = 'playing'
+                    SET blue = ?, status = 'playing', created_at = NOW()
                     WHERE id = ?;"
                 ;
                 $stmt = $this->conn->prepare($sql);

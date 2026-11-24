@@ -426,10 +426,7 @@
             }
 
             //check for timeout
-            $lastmove = new DateTimeImmutable($game["created_at"]);
-            $now = new DateTimeImmutable("now");
-
-            $seconds = $now->getTimestamp() - $lastmove->getTimestamp();
+            $seconds = (int) $game["elapsed_seconds"];
 
             if($seconds > 10){
                 //timeout
