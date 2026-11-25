@@ -37,6 +37,11 @@
                 }
             });
 
+            const rawText = await resource.text();
+            console.log("Status:", resource.status, "Body:", rawText);
+
+            const data = JSON.parse(rawText);
+            
             const data = await resource.json();
             console.log(data);
 
