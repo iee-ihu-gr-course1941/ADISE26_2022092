@@ -7,6 +7,12 @@
 
     var_dump($_SESSION);
 
+    $creds = $_SESSION;
+
+    foreach($creds as $cred){
+        echo "{$cred}\n";
+    }
+
     
 ?>
 
