@@ -13,7 +13,6 @@
     }
 
     $name = $_SESSION["uid"];
-
     $token = $_SESSION["token"];
     
 ?>
@@ -29,7 +28,12 @@
     
 </script>
 <body>
-    <form>
+    <form method="POST">
+        <div>
+            <a href="" style="text-decoration: underline;">Home</a>
+            <a href="">Play</a>
+            <a href="">About</a>
+        </div>
         <h>Hello, <?= $name ?></h>
     </form>
 </body>
