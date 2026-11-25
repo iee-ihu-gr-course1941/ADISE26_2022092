@@ -7,12 +7,14 @@
 
     //var_dump($_SESSION);
 
-    $creds = $_SESSION;
-
-    foreach($creds as $cred){
-        echo "{$cred}<br>";
+    if(empty($_SESSION)){
+        header("Location: ../");
+        exit;
     }
 
+    $name = $_SESSION["uid"];
+
+    $token = $_SESSION["token"];
     
 ?>
 
@@ -28,7 +30,7 @@
 </script>
 <body>
     <form>
-        <h>Hello World</h>
+        <h>Hello, <?= $name ?></h>
     </form>
 </body>
 </html>
