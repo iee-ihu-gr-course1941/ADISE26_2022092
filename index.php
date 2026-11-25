@@ -148,6 +148,7 @@
 	$parts = array_values(array_filter(explode("/", $path)));
 
 	//NORMAL GET
+	/*this returns the json screen, may use for debugging
 	if(empty($parts)){
 		echo json_encode([
 			"auth" => true,
@@ -156,7 +157,7 @@
 		]);
 		exit;
 	}
-
+	*/
 	//if url empty => go to frontend screen, else its api call
 	if(empty($parts)){
 		header("Location: frontend/index.php");

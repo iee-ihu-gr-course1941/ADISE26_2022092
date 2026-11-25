@@ -1,4 +1,6 @@
 <?php
+//works 
+//TODO complete this file with color choice etc.
 
     session_start();
 
@@ -41,7 +43,7 @@
                     "X-Token": api_token
                 },
                 body: JSON.stringify({
-                    color: "r"
+                    color: "r" //TODO change this
                 })
             });
 
