@@ -24,10 +24,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quoridor</title>
 </head>
-<script>
-    
-</script>
+
 <body>
+    <script>
+    
+    </script>
     <form method="POST">
         <div>
             <a href="home.php">Home</a>
