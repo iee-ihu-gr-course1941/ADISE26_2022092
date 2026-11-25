@@ -4,7 +4,7 @@ GET USER: curl -i -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api
   -H "Accept: application/json" \
   -H "X-Token: token"
 
-GET ALL USERS:
+GET ALL USERS (SCOREBOARD):
   curl -i -X GET "https://users.iee.ihu.gr/~michlits/ADISE26_2022092/api/users" \
   -H "Accept: application/json" \
   -H "X-Token: token"
