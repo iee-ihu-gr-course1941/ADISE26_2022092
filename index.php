@@ -157,11 +157,11 @@
 		exit;
 	}
 	
-	if($parts[0] !== "api" || empty($parts[1])){
-		http_response_code(404);
-		echo json_encode(["message" => "Endpoint Not Found"]);
-		exit;
-	}
+	//if($parts[0] !== "api" || empty($parts[1])){
+		//http_response_code(404);
+		//echo json_encode(["message" => "Endpoint Not Found"]);
+		//exit;
+	//}
 	
 
 	$resource = $parts[1];
