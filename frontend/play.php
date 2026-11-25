@@ -45,16 +45,11 @@
                 })
             });
 
-            const rawText = await resource.text();
-            console.log("Status:", resource.status, "Body:", rawText);
-
-            const data = JSON.parse(rawText);
-
-            data = await resource.json();
+            const data = await resource.json();
             console.log(data);
 
             if(resource.ok){
-                status.textContent = `Game Created! ID: ${data.id ?? ""}`;
+                status.textContent = `Game Created! ID: ${data.game.id ?? ""}`;
             }else{
                 status.textContent = "Error Creating Game";
             }
