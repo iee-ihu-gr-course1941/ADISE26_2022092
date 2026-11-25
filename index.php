@@ -178,8 +178,6 @@
 	$controller = new controller($gateway);
 
 	$controller->processRequest($method, $resource, $id);
-
-	header("Location: frontend/index.php");
 	
 	/* works, if not check with this
 	echo json_encode([
