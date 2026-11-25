@@ -5,12 +5,12 @@
 
     session_start();
 
-    var_dump($_SESSION);
+    //var_dump($_SESSION);
 
     $creds = $_SESSION;
 
     foreach($creds as $cred){
-        echo "{$cred}\n";
+        echo "{$cred}<br>";
     }
 
     
