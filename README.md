@@ -19,7 +19,7 @@ All the end points must include the `X-Token` Header with the token every user r
 | `GET` | `/api/matchhistory` | — | Get match history |
 | `GET` | `/api/matchhistory/{userid}` | — | Get User match history |
 
-# WALL PLACEMENT
+## WALL PLACEMENT
 
 When a wall is placed either vertically or horizontally, the starting point is the coordinates provided and then the wall is placed incrementally on the axis provided.
 
@@ -28,7 +28,7 @@ In the same way when the placement provided is `"e4v"` the wall will be placed o
 
 ### Example: `e4h` vs `e4v`
 
-```text
+```
          col 4 (e)     col 5 (f)
        +-------------+-------------+
 row 4  |     e5      |     f5      |
