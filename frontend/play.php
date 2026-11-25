@@ -39,7 +39,10 @@
                 headers: {
                     "Content-Type": "application/json",
                     "X-Token": api_token
-                }
+                },
+                body: JSON.stringify({
+                    color: "r"
+                })
             });
 
             const rawText = await resource.text();
