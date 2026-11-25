@@ -1,6 +1,11 @@
 <?php
 
     session_start();
+
+    if (empty($_SESSION["auth"])) {
+        header("Location: ../");
+        exit;
+    }
     
     $uid = $_SESSION["uid"] ?? "";
     $token = $_SESSION["token"] ?? "";
