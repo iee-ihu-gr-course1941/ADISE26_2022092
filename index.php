@@ -89,7 +89,7 @@
 				//$_SESSION["profile"] = $user; whole profile
 				//$_SESSION["profile"]->token = $token; add token to profile
 				$_SESSION["token"] = $token;
-				header("Location: frontend/index.php");// . $redirecturl);//test
+				header("Location:" . $redirecturl);
 				exit;
 
 			} else {
@@ -156,12 +156,18 @@
 		]);
 		exit;
 	}
+
+	//if url empty => go to frontend screen, else its api call
+	if(empty($parts)){
+		header("Location: frontend/index.php");
+		exit;
+	}
 	
-	//if($parts[0] !== "api" || empty($parts[1])){
-		//http_response_code(404);
-		//echo json_encode(["message" => "Endpoint Not Found"]);
-		//exit;
-	//}
+	if($parts[0] !== "api" || empty($parts[1])){
+		http_response_code(404);
+		echo json_encode(["message" => "Endpoint Not Found"]);
+		exit;
+	}
 	
 
 	$resource = $parts[1];
