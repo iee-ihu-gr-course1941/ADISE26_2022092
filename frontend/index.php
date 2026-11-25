@@ -30,9 +30,9 @@
 <body>
     <form method="POST">
         <div>
-            <a href="frontend/home.php">Home</a>
-            <a href="frontend/play.php">Play</a>
-            <a href="frontend/about.php">About</a>
+            <a href="home.php">Home</a>
+            <a href="play.php">Play</a>
+            <a href="about.php">About</a>
         </div>
         <h>Hello, <?= $name ?></h>
     </form>
