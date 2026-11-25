@@ -1,7 +1,9 @@
-<Limit GET POST PUT PATCH DELETE OPTIONS>
-    Require all granted
-</Limit>
+RewriteEngine On
+RewriteBase /~michlits/public_html/ADISE26_2022092
 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
