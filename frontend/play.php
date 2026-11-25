@@ -41,8 +41,8 @@
             console.log("Status:", resource.status, "Body:", rawText);
 
             const data = JSON.parse(rawText);
-            
-            const data = await resource.json();
+
+            data = await resource.json();
             console.log(data);
 
             if(resource.ok){
