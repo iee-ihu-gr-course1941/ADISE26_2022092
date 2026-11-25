@@ -428,7 +428,7 @@
             //check for timeout
             $seconds = (int) $game["elapsed_seconds"];
 
-            if($seconds > 10){
+            if($seconds > 600){
                 //timeout
                 $board = new quoridor($game["board_state"]);
 

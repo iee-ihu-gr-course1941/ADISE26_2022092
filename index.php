@@ -1,8 +1,9 @@
 <?php 
 	//class names should be lowercase cause debian on users cant find them
-	//TODO implement frontend with curl
-	//TODO implement timeout on player turn
+	//TODO timezone works, check for cases
 	declare(strict_types=1);
+
+	date_default_timezone_set("Europe/Athens");
 
 	require_once __DIR__ . "/config.php";
 
