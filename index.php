@@ -89,7 +89,7 @@
 				//$_SESSION["profile"] = $user; whole profile
 				//$_SESSION["profile"]->token = $token; add token to profile
 				$_SESSION["token"] = $token;
-				header("Location: " . $redirecturl);
+				header("Location: frontend/index.php");// . $redirecturl);//test
 				exit;
 
 			} else {
