@@ -90,6 +90,7 @@
     </form>
 
     <form id="joinform" method="GET">
+    <!--make this dropdown -->
         <div class="scroll-box">
             <?php if(empty($games)): ?>
                 <p>No games available</p>
