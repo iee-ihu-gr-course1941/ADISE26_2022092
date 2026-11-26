@@ -12,6 +12,8 @@
     <title>Home</title>
 </head>
 <body>
-    
+    <form method="POST">
+        
+    </form>
 </body>
 </html>

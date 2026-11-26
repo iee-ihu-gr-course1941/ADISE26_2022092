@@ -13,6 +13,38 @@
     $token = $_SESSION["token"] ?? "";
 
     require_once __DIR__ . "/../config.php";
+
+    $ch = require __DIR__ . "/../curlinit.php";
+
+    $status = "";
+
+    if($_SERVER["REQUEST_METHOD"] === "POST"){
+        $color = $_POST["color"] ?? "r";
+
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                "Content-Type: application/json",
+                "X-Token: $token"
+            ],
+            CURLOPT_POSTFIELDS => json_encode(["color" => $color])
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        curl_close($ch);
+        
+        if($response !== false && $httpCode === 201){
+            $data = json_decode($response, true);
+
+            if(empty($data)){
+                $status = "Error Creating Game";
+            }else{
+                $status = $data["message"] . " ID: " . (string) $data["game"]["id"];
+            }
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -23,43 +55,12 @@
     <title>Play</title>
 </head>
 <body>
-    <form id="playform">
+    <form id="playform" method="POST">
         <button id="createbtn" type="button">Create Game</button>
         <p id = "status"></p>
     </form>
 
     <script>
-    const api_url = <?= json_encode($apiurl) ?>;
-    const api_token = <?= json_encode($token) ?>;
-
-    document.getElementById("createbtn").addEventListener("click", async () =>{
-        const status = document.getElementById("status");
-            
-        try{
-            const resource = await fetch(`${api_url}/games`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-Token": api_token
-                },
-                body: JSON.stringify({
-                    color: "r" //TODO change this
-                })
-            });
-
-            const data = await resource.json();
-            console.log(data);
-
-            if(resource.ok){
-                status.textContent = `Game Created! ID: ${data.game.id ?? ""}`;
-            }else{
-                status.textContent = "Error Creating Game";
-            }
-        }catch(err){
-            console.error(err);
-            status.textContent = "Server Error";
-        }
-    })
     </script>
 </body>
 </html>
