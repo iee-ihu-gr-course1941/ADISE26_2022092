@@ -1,12 +1,14 @@
 <?php 
 
+    //Used for debugging on frontend
+    //ini_set('display_errors', 1);
+    //error_reporting(E_ALL);
+    //var_dump($_SESSION);
     declare(strict_types=1);
 
 	date_default_timezone_set("Europe/Athens");
 
     session_start();
-
-    //var_dump($_SESSION);
 
     if(empty($_SESSION)){
         header("Location: ../");
