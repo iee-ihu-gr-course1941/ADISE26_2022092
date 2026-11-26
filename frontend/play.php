@@ -22,12 +22,13 @@
         $color = $_POST["color"] ?? "r";
 
         curl_setopt_array($ch, [
+            CURLOPT_URL => "$apiurl/games",
             CURLOPT_POST => true,
             CURLOPT_HTTPHEADER => [
                 "Content-Type: application/json",
                 "X-Token: $token"
             ],
-            CURLOPT_POSTFIELDS => json_encode(["color" => $color])
+            CURLOPT_POSTFIELDS => json_encode(["color" => "r"]) // CHANGE THIS
         ]);
 
         $response = curl_exec($ch);
@@ -39,10 +40,12 @@
             $data = json_decode($response, true);
 
             if(empty($data)){
-                $status = "Error Creating Game";
+                $status = $data["message"];
             }else{
                 $status = $data["message"] . " ID: " . (string) $data["game"]["id"];
             }
+        }else{
+            $status = "Error Creating Game";
         }
     }
 ?>
@@ -56,8 +59,8 @@
 </head>
 <body>
     <form id="playform" method="POST">
-        <button id="createbtn" type="button">Create Game</button>
-        <p id = "status"></p>
+        <button>Create Game</button>
+        <p id = "status"><?= $status ?></p>
     </form>
 
     <script>
