@@ -91,27 +91,25 @@
     </form>
 
     <form id="joinform" method="GET">
-    <!--make this dropdown -->
+        <input type="hidden" name="gameid" id="selectedgame" value="">
         <div class="dropdown">
-            <button>Games</button>
+            <button type="button" id="dropdownbtn">Games</button>
             <?php if(empty($games)): ?>
                 <p>No games available</p>
             <?php else: ?>
-                <div class="dropdown-content">
+                <div class="dropdown-content" id="dropdownmenu">
                     <?php foreach($games as $game):?>
-                        <p>
+                        <p id="dropdown-item" data-id="<?= $game["id"]?>">
                             Game #<?=(string) $game["id"] ?>
                             - Status:<?= $game["status"] ?>
                         </p>
                     <?php endforeach; ?>
                 </div>
-                
             <?php endif; ?>
         </div>
     </form>
 
-    <script>
-    </script>
+    <script src="dropdown.js"></script>
 </body>
 </html>
 

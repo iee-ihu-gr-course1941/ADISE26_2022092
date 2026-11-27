@@ -8,6 +8,14 @@
     position: absolute;
 }
 
+.dropdown-content.show {
+    display: block;
+}
+
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+.dropdown-item:hover {
+    cursor: pointer;
 }
