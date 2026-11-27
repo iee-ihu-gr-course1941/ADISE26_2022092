@@ -44,10 +44,10 @@
             
             curl_close($ch);
             
-           if(empty($data)){
-                    $createstatus = $data["message"];
+            $data = json_decode($response, true);
+            if(empty($data)){
+                $createstatus = $data["message"];
             }else{
-                $data = json_decode($response, true);
                 $createstatus = $data["message"] . " ID: " . (string) $data["game"]["id"];
             }
             
@@ -71,10 +71,10 @@
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
 
+                $data = json_decode($response, true);
                 if(empty($data)){
                     $joinstatus = $data["message"];
                 }else{
-                    $data = json_decode($response, true);
                     $joinstatus = $data["message"];
                 }            
             }
