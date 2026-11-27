@@ -44,17 +44,9 @@
             
             curl_close($ch);
             
-            if($response !== false && $httpCode === 201){
-                $data = json_decode($response, true);
-
-                if(empty($data)){
-                    $createstatus = "Error Creating Game";
-                }else{
-                    $createstatus = $data["message"] . " ID: " . (string) $data["game"]["id"];
-                }
-            }else{
-                $createstatus = "Error Creating Game";
-            }
+            $data = json_decode($response, true);
+            $createstatus = $data["message"] . " ID: " . (string) $data["game"]["id"];
+        
         }elseif($action === "join"){
             $gameid = $_POST["gameid"] ?? "";
 
@@ -75,12 +67,10 @@
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
 
-                if($response !== false && $httpCode === 200){
-                    $data = json_decode($response, true);
-                    $joinstatus = $data["message"];
-                }else{
-                    $joinstatus = "Error Joining Game";
-                }
+                
+                $data = json_decode($response, true);
+                $joinstatus = $data["message"];
+                            
             }
         }
     }
