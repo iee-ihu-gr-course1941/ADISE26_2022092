@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /~michlits/public_html/ADISE26_2022092
+RewriteBase /~michlits/ADISE26_2022092
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

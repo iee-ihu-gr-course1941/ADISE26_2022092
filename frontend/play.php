@@ -69,17 +69,9 @@
 
                 $response = curl_exec($ch);
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-               
                 curl_close($ch);
 
-                $data = json_decode($response, true);
-                if(empty($data)){
-                    $joinstatus = "Error Joining Game";
-                }else{
-                    $joinstatus = $data["message"];
-                }            
-
-                $joinstatus = "HTTP: $httpCode | Response: " . htmlspecialchars((string)$response);
+                $joinstatus = "HTTP: $httpCode | Body: " . htmlspecialchars((string)$response);
             }
         }
     }
