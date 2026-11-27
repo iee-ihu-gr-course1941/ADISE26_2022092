@@ -69,7 +69,7 @@
 
                 $response = curl_exec($ch);
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                $curlerror = curl_error($ch);
+               
                 curl_close($ch);
 
                 $data = json_decode($response, true);
@@ -79,7 +79,7 @@
                     $joinstatus = $data["message"];
                 }            
 
-                $joinstatus = $curlerror;
+                $joinstatus = "HTTP: $httpCode | Response: " . htmlspecialchars((string)$response);
             }
         }
     }
