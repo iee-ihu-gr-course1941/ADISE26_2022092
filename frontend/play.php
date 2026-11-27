@@ -99,7 +99,7 @@
             <?php else: ?>
                 <div class="dropdown-content" id="dropdownmenu">
                     <?php foreach($games as $game):?>
-                        <p id="dropdown-item" data-id="<?= $game["id"]?>">
+                        <p class="dropdown-item" data-id="<?= $game["id"]?>">
                             Game #<?=(string) $game["id"] ?>
                             - Status:<?= $game["status"] ?>
                         </p>

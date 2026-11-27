@@ -9,14 +9,14 @@ document.addEventListener("DOMContentLoaded" , () =>{
 
         dropdownbtn.addEventListener("click" , (e) =>{
             e.stopPropagation();
-            dropdowncontent.classList.toggle("show");
+            dropdownmenu.classList.toggle("show");
         });
 
         items.forEach(item =>{
             item.addEventListener("click", () => {
                 dropdownbtn.textContent = item.textContent.trim();
                 selectedgame.value = item.dataset.id;
-                dropdownmenu.clasList.remove("show");
+                dropdownmenu.classList.remove("show");
             });
         });
 
