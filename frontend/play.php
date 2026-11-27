@@ -15,36 +15,69 @@
 
     $ch = require __DIR__ . "/../curlinit.php";
 
-    $status = "";
+    $createstatus = "";
+    $joinstatus = "";
 
     if($_SERVER["REQUEST_METHOD"] === "POST"){
-        $color = $_POST["color"] ?? "r";
 
-        curl_setopt_array($ch, [
-            CURLOPT_URL => "$apiurl/games",
-            CURLOPT_POST => true,
-            CURLOPT_HTTPHEADER => [
-                "Content-Type: application/json",
-                "X-Token: $token"
-            ],
-            CURLOPT_POSTFIELDS => json_encode(["color" => "r"]) // CHANGE THIS
-        ]);
+        $action = $_POST["action"] ?? "";
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
-        curl_close($ch);
-        
-        if($response !== false && $httpCode === 201){
-            $data = json_decode($response, true);
+        if($action  === "create"){
+            $color = $_POST["color"] ?? "r";
 
-            if(empty($data)){
-                $status = "Error Creating Game";
+            curl_setopt_array($ch, [
+                CURLOPT_URL => "$apiurl/games",
+                CURLOPT_POST => true,
+                CURLOPT_HTTPHEADER => [
+                    "Content-Type: application/json",
+                    "X-Token: $token"
+                ],
+                CURLOPT_POSTFIELDS => json_encode(["color" => "r"]) //TODO CHANGE THIS
+            ]);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            curl_close($ch);
+            
+            if($response !== false && $httpCode === 201){
+                $data = json_decode($response, true);
+
+                if(empty($data)){
+                    $createstatus = "Error Creating Game";
+                }else{
+                    $createstatus = $data["message"] . " ID: " . (string) $data["game"]["id"];
+                }
             }else{
-                $status = $data["message"] . " ID: " . (string) $data["game"]["id"];
+                $createstatus = "Error Creating Game";
             }
-        }else{
-            $status = "Error Creating Game";
+        }elseif($action === "join"){
+            $gameid = $_POST["gameid"] ?? "";
+
+            if(empty($gameid)){
+                $joinstatus = "Please select a game first.";
+                curl_close($ch);
+            }else{
+                curl_setopt_array($ch, [
+                    CURLOPT_URL => "$apiurl/games/$gameid",
+                    CURLOPT_CUSTOMREQUEST => "PATCH",
+                    CURLOPT_HTTPHEADER => [
+                        "Content-Type: application/json",
+                        "X-Token: $token"
+                    ]
+                ]);
+
+                $response = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+
+                if($response !== false && $httpCode === 200){
+                    $data = json_decode($response, true);
+                    $joinstatus = $data["message"];
+                }else{
+                    $joinstatus = "Error Joining Game";
+                }
+            }
         }
     }
 
@@ -86,12 +119,19 @@
     </div>
 
     <form id="createform" method="POST">
+        <input type="hidden" name="action" value="create">
         <button>Create Game</button>
-        <p id = "status"><?= $status ?></p>
+        <p id = "createstatus"><?= $createstatus ?></p>
     </form>
 
-    <form id="joinform" method="GET">
+    <form id="joinform" method="POST">
+        
+        <input type="hidden" name="action" value="join">
         <input type="hidden" name="gameid" id="selectedgame" value="">
+
+        <button>Join Game</button>
+        <p id="joinstatus"><?= $joinstatus ?></p>
+
         <div class="dropdown">
             <button type="button" id="dropdownbtn">Games</button>
             <?php if(empty($games)): ?>
