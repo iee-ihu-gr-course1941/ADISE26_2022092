@@ -91,12 +91,12 @@
 
     <form id="joinform" method="GET">
     <!--make this dropdown -->
-        <div class="scroll-box">
+        <div class="dropdown">
             <?php if(empty($games)): ?>
                 <p>No games available</p>
             <?php else: ?>
                 <?php foreach($games as $game):?>
-                    <div>
+                    <div class="dropdown-content">
                         Game #<?=(string) $game["id"] ?>
                         - Status:<?= $game["status"] ?>
                     </div>
