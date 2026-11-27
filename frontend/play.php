@@ -72,7 +72,13 @@
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
 
-                $joinstatus = "HTTP: $httpCode | Body: " . htmlspecialchars((string)$response);
+                $data = json_decode($response, true);
+
+                if(empty($data)){
+                    $createstatus = "Error Creating Game";
+                }else{
+                    $createstatus = $data["message"] . " ID: " . (string) $data["game"]["id"];
+                }
             }
         }
     }
