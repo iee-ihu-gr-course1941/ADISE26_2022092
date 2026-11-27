@@ -175,6 +175,19 @@
 	$id = $parts[2] ?? null;
 	
 	$method = $_SERVER["REQUEST_METHOD"];
+
+	if ($method === "POST") {
+		$override = $_SERVER["HTTP_X_HTTP_METHOD_OVERRIDE"] ?? null;
+
+		if (!$override && function_exists("getallheaders")) {
+			$headers = array_change_key_case(getallheaders(), CASE_LOWER);
+			$override = $headers["x-http-method-override"] ?? null;
+		}
+
+		if (!empty($override)) {
+			$method = strtoupper($override);
+		}
+	}
 	
 	$controller = new controller($gateway);
 
