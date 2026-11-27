@@ -93,6 +93,7 @@
     <form id="joinform" method="GET">
     <!--make this dropdown -->
         <div class="dropdown">
+            <button>Games</button>
             <?php if(empty($games)): ?>
                 <p>No games available</p>
             <?php else: ?>
