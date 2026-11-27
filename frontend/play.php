@@ -60,10 +60,11 @@
             }else{
                 curl_setopt_array($ch, [
                     CURLOPT_URL => "$apiurl/games/$gameid",
-                    CURLOPT_CUSTOMREQUEST => "PATCH",
+                    CURLOPT_POST => true,
                     CURLOPT_HTTPHEADER => [
                         "Content-Type: application/json",
-                        "X-Token: $token"
+                        "X-Token: $token",
+                        "X-HTTP-Method-Override: PATCH"
                     ]
                 ]);
 
