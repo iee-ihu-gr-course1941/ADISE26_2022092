@@ -97,12 +97,15 @@
             <?php if(empty($games)): ?>
                 <p>No games available</p>
             <?php else: ?>
-                <?php foreach($games as $game):?>
-                    <div class="dropdown-content">
-                        Game #<?=(string) $game["id"] ?>
-                        - Status:<?= $game["status"] ?>
-                    </div>
-                <?php endforeach; ?>
+                <div class="dropdown-content">
+                    <?php foreach($games as $game):?>
+                        <p>
+                            Game #<?=(string) $game["id"] ?>
+                            - Status:<?= $game["status"] ?>
+                        </p>
+                    <?php endforeach; ?>
+                </div>
+                
             <?php endif; ?>
         </div>
     </form>
