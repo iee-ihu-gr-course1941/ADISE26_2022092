@@ -46,7 +46,7 @@
             
             $data = json_decode($response, true);
             if(empty($data)){
-                $createstatus = $data["message"];
+                $createstatus = "Error Creating Game";
             }else{
                 $createstatus = $data["message"] . " ID: " . (string) $data["game"]["id"];
             }
@@ -73,7 +73,7 @@
 
                 $data = json_decode($response, true);
                 if(empty($data)){
-                    $joinstatus = $data["message"];
+                    $joinstatus = "Error Joining Game";
                 }else{
                     $joinstatus = $data["message"];
                 }            
