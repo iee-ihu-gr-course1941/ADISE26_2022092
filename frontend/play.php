@@ -101,8 +101,12 @@
     curl_close($ch);
 
     if($response !== false && $httpCode === 200){
-        $decoded = json_decode($response, true);
-        $games = $decoded["games"] ?? (is_array($decoded) ? $decoded : []); 
+        $decoded = json_decode($response, true);    
+        if(empty($decoded["games"])){
+            $games = [];
+        }else{
+            $games = $decoded["games"];
+        }
     }
 ?>
 
@@ -153,10 +157,12 @@
             <?php else: ?>
                 <div class="dropdown-content dropdownmenu">
                     <?php foreach($games as $game):?>
-                        <p class="dropdown-item" data-id="<?= $game["id"]?>">
-                            Game #<?=(string) $game["id"] ?>
-                            - Status:<?= $game["status"] ?>
-                        </p>
+                        <?php if(is_array($game) && isset($game["id"])): ?>
+                            <p class="dropdown-item" data-id="<?= $game["id"]?>">
+                                Game #<?=(string) $game["id"] ?>
+                                - Status:<?= $game["status"] ?>
+                            </p>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
