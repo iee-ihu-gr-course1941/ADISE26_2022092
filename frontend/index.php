@@ -1,5 +1,10 @@
 <?php 
 
+    //TODO join works, fix create with color choice with dropdown menu
+    //TODO implement a board and play
+    //TODO implement match history
+    //TODO implement scoreboard page
+
     //Used for debugging on frontend
     //ini_set('display_errors', 1);
     //error_reporting(E_ALL);

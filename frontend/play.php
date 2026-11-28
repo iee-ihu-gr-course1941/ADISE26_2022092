@@ -1,6 +1,7 @@
 <?php
     //works 
     //TODO complete this file with color choice etc.
+    //join works
 
     ini_set('display_errors', 1);
     error_reporting(E_ALL);
