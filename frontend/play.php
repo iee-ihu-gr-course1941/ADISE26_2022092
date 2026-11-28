@@ -126,10 +126,11 @@
         <input type="hidden" name="action" value="create">
         <div>
             <button>Create Game</button>
-            <div class="dropdown"></div>
-                <button type="button" id="dropdownbtn">Games</button>
-                <div class="dropdown-content" id="dropdownmenu">RED</div>
-                <div class="dropdown-content" id="dropdownmenu">BLUE</div>
+            <div class="dropdown">
+                <button type="button" id="dropdownbtn">Color</button>
+                <div class="dropdown-content" id="dropdownmenu"><p>RED</p></div>
+                <div class="dropdown-content" id="dropdownmenu"><p>BLUE</p></div>
+            </div>
             <p id = "createstatus"><?= $createstatus ?></p>
         </div>
     </form>
