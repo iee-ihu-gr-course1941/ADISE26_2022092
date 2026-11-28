@@ -28,7 +28,7 @@
         $action = $_POST["action"] ?? "";
 
         if($action  === "create"){
-            $color = $_POST["color"] ?? "r";
+            $color = !empty($_POST["color"]) ? $_POST["color"] : "r";
 
             curl_setopt_array($ch, [
                 CURLOPT_URL => "$apiurl/games",
@@ -37,7 +37,7 @@
                     "Content-Type: application/json",
                     "X-Token: $token"
                 ],
-                CURLOPT_POSTFIELDS => json_encode(["color" => "r"]) //TODO CHANGE THIS
+                CURLOPT_POSTFIELDS => json_encode(["color" => $color]) //TODO CHANGE THIS
             ]);
 
             $response = curl_exec($ch);
@@ -76,9 +76,9 @@
                 $data = json_decode($response, true);
 
                 if(empty($data)){
-                    $createstatus = "Error Creating Game";
+                    $joinstatus = "Error Joining Game";
                 }else{
-                    $createstatus = $data["message"] . " ID: " . (string) $data["game"]["id"];
+                    $joinstatus = $data["message"] . " ID: " . (string) $data["game"]["id"];
                 }
             }
         }
@@ -124,11 +124,12 @@
 
     <form id="createform" method="POST">
         <input type="hidden" name="action" value="create">
+        <input type="hidden" name="color" class="dropdown-value" value="">
         <div>
             <button>Create Game</button>
             <div class="dropdown">
-                <button type="button" id="dropdownbtn">Color</button>
-                <div class="dropdown-content" id="dropdownmenu">
+                <button type="button" class="dropdownbtn">Color</button>
+                <div class="dropdown-content dropdownmenu">
                     <p class="dropdown-item" data-id="r">RED</p>
                     <p class="dropdown-item" data-id="b">BLUE</p>
                 </div>
@@ -140,17 +141,17 @@
     <form id="joinform" method="POST">
         
         <input type="hidden" name="action" value="join">
-        <input type="hidden" name="gameid" id="selectedgame" value="">
+        <input type="hidden" name="gameid" class="dropdown-value" value="">
 
         <button>Join Game</button>
         <p id="joinstatus"><?= $joinstatus ?></p>
 
         <div class="dropdown">
-            <button type="button" id="dropdownbtn">Games</button>
+            <button type="button" class="dropdownbtn">Games</button>
             <?php if(empty($games)): ?>
                 <p>No games available</p>
             <?php else: ?>
-                <div class="dropdown-content" id="dropdownmenu">
+                <div class="dropdown-content dropdownmenu">
                     <?php foreach($games as $game):?>
                         <p class="dropdown-item" data-id="<?= $game["id"]?>">
                             Game #<?=(string) $game["id"] ?>

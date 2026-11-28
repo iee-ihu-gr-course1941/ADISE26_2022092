@@ -1,27 +1,39 @@
 document.addEventListener("DOMContentLoaded" , () =>{
 
-    const dropdownbtn = document.getElementById("dropdownbtn");
-    const dropdownmenu = document.getElementById("dropdownmenu");
-    const selectedgame = document.getElementById("selectedgame");
-    const items = document.querySelectorAll(".dropdown-item");
+    const dropdowns = document.querySelectorAll(".dropdown");
 
-    if(dropdownbtn && dropdownmenu){
+    dropdowns.forEach(dropdown => {
+        const dropdownbtn = dropdown.querySelector(".dropdownbtn");
+        const dropdownmenu = dropdown.querySelector(".dropdownmenu");
+        const selectedgame = dropdown.closest("form").querySelector(".dropdown-value");
+        const items = dropdown.querySelectorAll(".dropdown-item");
 
-        dropdownbtn.addEventListener("click" , (e) =>{
-            e.stopPropagation();
-            dropdownmenu.classList.toggle("show");
-        });
+        if(dropdownbtn && dropdownmenu){
 
-        items.forEach(item =>{
-            item.addEventListener("click", () => {
-                dropdownbtn.textContent = item.textContent.trim();
-                selectedgame.value = item.dataset.id;
-                dropdownmenu.classList.remove("show");
+            dropdownbtn.addEventListener("click" , (e) =>{
+                e.stopPropagation();
+
+                document.querySelectorAll(".dropdown-content.show").forEach(openMenu =>{
+                    if(openMenu !== dropdownmenu){
+                        openMenu.classList.remove("show");
+                    } 
+                });
+                dropdownmenu.classList.toggle("show");
             });
-        });
 
-        window.addEventListener("click", () => {
-            dropdownmenu.classList.remove("show");
-        })
-    }
-})
+            items.forEach(item =>{
+                item.addEventListener("click", () => {
+                    dropdownbtn.textContent = item.textContent.trim();
+                    selectedgame.value = item.dataset.id;
+                    dropdownmenu.classList.remove("show");
+                });
+            });
+        }
+    });
+
+    window.addEventListener("click", () => {
+        document.querySelectorAll(".dropdown-content.show").forEach(menu => {
+            menu.classList.remove("show");
+        });
+    });
+});
