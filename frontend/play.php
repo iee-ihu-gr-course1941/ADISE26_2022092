@@ -115,6 +115,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1>Play</h1>
     <div>
         <a href="home.php">Home</a>
         <a href="play.php">Play</a>
@@ -123,8 +124,14 @@
 
     <form id="createform" method="POST">
         <input type="hidden" name="action" value="create">
-        <button>Create Game</button>
-        <p id = "createstatus"><?= $createstatus ?></p>
+        <div>
+            <button>Create Game</button>
+            <div class="dropdown"></div>
+                <button type="button" id="dropdownbtn">Games</button>
+                <div class="dropdown-content" id="dropdownmenu">RED</div>
+                <div class="dropdown-content" id="dropdownmenu">BLUE</div>
+            <p id = "createstatus"><?= $createstatus ?></p>
+        </div>
     </form>
 
     <form id="joinform" method="POST">

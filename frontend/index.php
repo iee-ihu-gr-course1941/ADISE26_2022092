@@ -38,6 +38,7 @@
     
     </script>
     <form method="POST">
+        <h1>Home</h1>
         <div>
             <a href="home.php">Home</a>
             <a href="play.php">Play</a>
