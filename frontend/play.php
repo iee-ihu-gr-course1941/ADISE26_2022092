@@ -129,8 +129,8 @@
             <div class="dropdown">
                 <button type="button" id="dropdownbtn">Color</button>
                 <div class="dropdown-content" id="dropdownmenu">
-                    <p class="dropdown-item" data-id="r"></p>
-                    <p class="dropdown-item" data-id="b"></p>
+                    <p class="dropdown-item" data-id="r">RED</p>
+                    <p class="dropdown-item" data-id="b">BLUE</p>
                 </div>
             </div>
             <p id = "createstatus"><?= $createstatus ?></p>
