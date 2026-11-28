@@ -128,8 +128,8 @@
             <button>Create Game</button>
             <div class="dropdown">
                 <button type="button" id="dropdownbtn">Color</button>
-                <div class="dropdown-content" id="dropdownmenu"><p>RED</p></div>
-                <div class="dropdown-content" id="dropdownmenu"><p>BLUE</p></div>
+                <div class="dropdown-content" id="dropdownmenu"><p class="dropdown-item">RED</p></div>
+                <div class="dropdown-content" id="dropdownmenu"><p class="dropdown-item">BLUE</p></div>
             </div>
             <p id = "createstatus"><?= $createstatus ?></p>
         </div>
